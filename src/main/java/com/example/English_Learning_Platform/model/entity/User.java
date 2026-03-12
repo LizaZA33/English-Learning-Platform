@@ -32,7 +32,11 @@ public class User {
     @Column(name = "role_id", nullable = false)
     private Role role;
     @CreatedDate
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", nullable =  false, updatable = false)
     private LocalDateTime createAt;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Teacher teacher;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Student student;
 }
 
