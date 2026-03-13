@@ -20,4 +20,6 @@ public class Module {
     private String name;
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CourseGroup> groups = new ArrayList<>();
+    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Lecture> lectures = new ArrayList<>();
 }

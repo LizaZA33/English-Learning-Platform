@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import java.util.*;
 
 @Entity
 @Table(name = "teacher")
@@ -24,7 +25,12 @@ public class Teacher extends User{
     @Column(name = "lastName", nullable = false)
     private String lastName;
     @Column(name = "patronymic")
+    @Size(min = 2, max = 100, message = "Кол-во символов в отчестве должно быть от 2 до 100")
     private String patronymic;
     @Column(name = "number", length = 11)
     private char [] number;
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CourseGroup> groups = new ArrayList<>();
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Lesson> lessons = new ArrayList<>();
 }

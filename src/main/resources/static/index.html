@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Learning Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-container">
+        <h1 class="nav-logo">English Learning Platform</h1>
+        <div class="nav-links" id="navLinks">
+            <a href="/" class="active">Home</a>
+            <a href="login.html" id="loginLink">Login</a>
+            <a href="/static/register.html" id="registerLink">Register</a>
+            <a href="#" id="dashboardLink" style="display: none;">Dashboard</a>
+            <a href="#" id="logoutLink" style="display: none;">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+    <section class="hero">
+        <h1>Learn English Effectively</h1>
+        <p>Interactive flashcards, video lectures, and personalized learning paths</p>
+        <div class="hero-buttons">
+            <a href="/static/register.html" class="btn btn-primary">Get Started</a>
+            <a href="#features" class="btn btn-secondary">Learn More</a>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <h2>Features</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Interactive Flashcards</h3>
+                <p>Learn vocabulary with our smart flashcard system</p>
+            </div>
+            <div class="feature-card">
+                <h3>Track Progress</h3>
+                <p>Monitor your learning progress and achievements</p>
+            </div>
+            <div class="feature-card">
+                <h3>Study Groups</h3>
+                <p>Join groups and learn together with other students</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+</body>
+</html>
