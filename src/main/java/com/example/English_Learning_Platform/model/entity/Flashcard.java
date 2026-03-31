@@ -1,13 +1,14 @@
 package com.example.English_Learning_Platform.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "flashcards")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Flashcard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

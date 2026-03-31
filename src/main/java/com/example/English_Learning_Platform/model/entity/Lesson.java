@@ -1,8 +1,7 @@
 package com.example.English_Learning_Platform.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +9,8 @@ import java.util.List;
 @Table(name = "lessons")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

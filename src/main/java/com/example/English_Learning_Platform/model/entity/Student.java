@@ -14,6 +14,8 @@ import java.util.*;
 @PrimaryKeyJoinColumn(name = "user_id")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Student extends User{
     @Id
     private Long id;

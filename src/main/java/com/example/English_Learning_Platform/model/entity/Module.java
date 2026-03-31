@@ -2,8 +2,7 @@ package com.example.English_Learning_Platform.model.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +11,8 @@ import java.util.List;
 @Table(name = "modules")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

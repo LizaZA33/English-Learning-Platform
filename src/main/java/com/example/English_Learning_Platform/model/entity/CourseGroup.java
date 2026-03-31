@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @Table(name = "course_groups")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CourseGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

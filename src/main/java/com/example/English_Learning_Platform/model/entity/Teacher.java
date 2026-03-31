@@ -3,8 +3,7 @@ package com.example.English_Learning_Platform.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import java.util.*;
 
@@ -13,6 +12,8 @@ import java.util.*;
 @PrimaryKeyJoinColumn(name = "user_id")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Teacher extends User{
     @Id
     private Long id;

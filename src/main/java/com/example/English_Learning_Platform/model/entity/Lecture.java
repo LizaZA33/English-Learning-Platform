@@ -1,14 +1,15 @@
 package com.example.English_Learning_Platform.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import java.util.*;
 
 @Entity
 @Table(name = "lectures")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Lecture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
