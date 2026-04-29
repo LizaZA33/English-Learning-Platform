@@ -9,5 +9,5 @@ import java.time.LocalDateTime;
 public class LectureProgressResponse {
     private Long lectureId;
     private String lectureTitle;
-    private Integer progressPercent;
+    private Integer lectureProgress;
 }

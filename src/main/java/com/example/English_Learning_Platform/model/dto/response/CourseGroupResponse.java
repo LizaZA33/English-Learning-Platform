@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 public class CourseGroupResponse {
     private Long id;
     private String name;
-    private String description;
     private String inviteCode;
     private TeacherResponse teacher;
     private ModuleResponse module;

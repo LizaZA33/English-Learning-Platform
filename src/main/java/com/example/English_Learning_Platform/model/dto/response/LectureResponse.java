@@ -6,7 +6,9 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModuleResponse {
+public class LectureResponse {
     private Long id;
-    private String name;
+    private String title;
+    private String content;
+    private ModuleResponse module;
 }

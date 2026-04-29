@@ -4,6 +4,8 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoginRequest {
     @NotBlank (message = "Требуется почта")
     @Email(message = "Почта должна быть валидной")

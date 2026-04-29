@@ -16,8 +16,7 @@ public class StudentResponse {
     private LocalDate dateOfBirth;
     private String phoneNumber;
     private List<CourseGroupResponse> groups;
-    private Integer totalLectures;
-    private Integer completedLectures;
-    private Integer totalLessons;
-    private Integer completedLessons;
+    private List<LectureProgressResponse> lectureProgress;
+    private List<LessonProgressResponse> lessonProgress;
+
 }
