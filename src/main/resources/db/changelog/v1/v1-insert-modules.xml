@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="13-insert-initial-modules" author="dev">
+        <comment>Добавление начальных модулей</comment>
+        <insert tableName="module">
+            <column name="name" value="Базовый английский"/>
+        </insert>
+        <insert tableName="module">
+            <column name="name" value="Продвинутый английский"/>
+        </insert>
+        <insert tableName="module">
+            <column name="name" value="Бизнес английский"/>
+        </insert>
+        <insert tableName="module">
+            <column name="name" value="Английский для путешествий"/>
+        </insert>
+        <rollback>
+            <delete tableName="module">
+                <where>name IN ('Базовый английский', 'Продвинутый английский',
+                    'Бизнес английский', 'Английский для путешествий')</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
