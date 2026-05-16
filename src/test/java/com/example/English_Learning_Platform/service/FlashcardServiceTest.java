@@ -8,7 +8,6 @@ import com.example.English_Learning_Platform.model.entity.FlashcardEntity;
 import com.example.English_Learning_Platform.model.entity.LessonEntity;
 import com.example.English_Learning_Platform.repository.FlashcardRepository;
 import com.example.English_Learning_Platform.repository.LessonRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,97 +40,139 @@ class FlashcardServiceTest {
     @InjectMocks
     private FlashcardService flashcardService;
 
-    private LessonEntity lessonEntity;
-    private FlashcardEntity flashcardEntity;
-    private FlashcardRequest flashcardRequest;
-    private FlashcardResponse flashcardResponse;
-
-    @BeforeEach
-    void setUp() {
-        lessonEntity = new LessonEntity();
-        lessonEntity.setId(1L);
-        lessonEntity.setTitle("Test Lesson");
-
-        flashcardEntity = new FlashcardEntity();
-        flashcardEntity.setId(1L);
-        flashcardEntity.setTerm("Hello");
-        flashcardEntity.setDefinition("A greeting");
-        flashcardEntity.setTranslation("Привет");
-        flashcardEntity.setDifficulty(1);
-        flashcardEntity.setLessonEntity(lessonEntity);
-
-        flashcardRequest = new FlashcardRequest();
-        flashcardRequest.setLessonId(1L);
-        flashcardRequest.setTerm("Hello");
-        flashcardRequest.setDefinition("A greeting");
-        flashcardRequest.setTranslation("Привет");
-        flashcardRequest.setDifficulty(1);
-
-        flashcardResponse = FlashcardResponse.builder()
-                .id(1L)
-                .term("Hello")
-                .definition("A greeting")
-                .translation("Привет")
-                .difficulty(1)
-                .lessonId(1L)
-                .build();
+    @Test
+    void shouldCreateFlashcardWhenValidRequest() {
+        FlashcardRequest request = new FlashcardRequest();
+        request.setLessonId(1L);
+        request.setTerm("Hello");
+        request.setTranslation("Привет");
+        LessonEntity lesson = new LessonEntity();
+        lesson.setId(1L);
+        FlashcardEntity entity = new FlashcardEntity();
+        entity.setId(1L);
+        entity.setTerm("Hello");
+        entity.setLessonEntity(lesson);
+        FlashcardResponse response = FlashcardResponse.builder()
+                .id(1L).term("Hello").lessonId(1L).build();
+        when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
+        when(flashcardMapper.toEntity(request)).thenReturn(entity);
+        when(flashcardRepository.save(any(FlashcardEntity.class))).thenReturn(entity);
+        when(flashcardMapper.toResponse(entity)).thenReturn(response);
+        FlashcardResponse result = flashcardService.createFlashcard(request);
+        assertNotNull(result);
+        assertEquals("Hello", result.getTerm());
+        verify(flashcardRepository).save(any(FlashcardEntity.class));
     }
 
     @Test
-    void createFlashcard_Success() {
-        when(lessonRepository.findById(1L)).thenReturn(Optional.of(lessonEntity));
-        when(flashcardMapper.toEntity(flashcardRequest)).thenReturn(flashcardEntity);
-        when(flashcardRepository.save(any(FlashcardEntity.class))).thenReturn(flashcardEntity);
-        when(flashcardMapper.toResponse(flashcardEntity)).thenReturn(flashcardResponse);
-
-        FlashcardResponse response = flashcardService.createFlashcard(flashcardRequest);
-
-        assertNotNull(response);
-        assertEquals("Hello", response.getTerm());
-        assertEquals(1L, response.getLessonId());
-        verify(flashcardRepository, times(1)).save(any(FlashcardEntity.class));
+    void shouldThrowExceptionWhenCreatingFlashcardForNonExistentLesson() {
+        FlashcardRequest request = new FlashcardRequest();
+        request.setLessonId(999L);
+        when(lessonRepository.findById(999L)).thenReturn(Optional.empty());
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+                () -> flashcardService.createFlashcard(request));
+        assertEquals("Урок не найден", exception.getMessage());
+        verify(flashcardRepository, never()).save(any());
     }
 
     @Test
-    void createFlashcard_LessonNotFound_ThrowsException() {
-        when(lessonRepository.findById(99L)).thenReturn(Optional.empty());
-        flashcardRequest.setLessonId(99L);
+    void shouldReturnFlashcardByIdWhenExists() {
+        FlashcardEntity entity = new FlashcardEntity();
+        entity.setId(1L);
+        entity.setTerm("Test");
+        FlashcardResponse response = FlashcardResponse.builder().id(1L).term("Test").build();
+        when(flashcardRepository.findById(1L)).thenReturn(Optional.of(entity));
+        when(flashcardMapper.toResponse(entity)).thenReturn(response);
+        FlashcardResponse result = flashcardService.getFlashcardById(1L);
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        verify(flashcardRepository).findById(1L);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenFlashcardNotFound() {
+        when(flashcardRepository.findById(999L)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class,
+                () -> flashcardService.getFlashcardById(999L));
+    }
+
+    @Test
+    void shouldUpdateFlashcardWhenExists() {
+        Long id = 1L;
+        FlashcardRequest request = new FlashcardRequest();
+        request.setTerm("Updated");
+        request.setDefinition("New def");
+        request.setExample("Example");
+        request.setTranslation("Перевод");
+        request.setDifficulty(3);
+        FlashcardEntity entity = new FlashcardEntity();
+        entity.setId(id);
+        entity.setTerm("Old");
+        FlashcardResponse response = FlashcardResponse.builder().id(id).term("Updated").build();
+        when(flashcardRepository.findById(id)).thenReturn(Optional.of(entity));
+        when(flashcardRepository.save(entity)).thenReturn(entity);
+        when(flashcardMapper.toResponse(entity)).thenReturn(response);
+        FlashcardResponse result = flashcardService.updateFlashcard(id, request);
+        assertNotNull(result);
+        assertEquals("Updated", result.getTerm());
+        verify(flashcardRepository).save(entity);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdatingNonExistentFlashcard() {
+        when(flashcardRepository.findById(999L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
-                () -> flashcardService.createFlashcard(flashcardRequest));
+                () -> flashcardService.updateFlashcard(999L, new FlashcardRequest()));
     }
 
     @Test
-    void getFlashcardById_Success() {
-        when(flashcardRepository.findById(1L)).thenReturn(Optional.of(flashcardEntity));
-        when(flashcardMapper.toResponse(flashcardEntity)).thenReturn(flashcardResponse);
-
-        FlashcardResponse response = flashcardService.getFlashcardById(1L);
-
-        assertNotNull(response);
-        assertEquals("Hello", response.getTerm());
+    void shouldDeleteFlashcardWhenExists() {
+        when(flashcardRepository.existsById(1L)).thenReturn(true);
+        flashcardService.deleteFlashcard(1L);
+        verify(flashcardRepository).existsById(1L);
+        verify(flashcardRepository).deleteById(1L);
     }
 
     @Test
-    void getFlashcardById_NotFound_ThrowsException() {
-        when(flashcardRepository.findById(99L)).thenReturn(Optional.empty());
-
+    void shouldThrowExceptionWhenDeletingNonExistentFlashcard() {
+        when(flashcardRepository.existsById(999L)).thenReturn(false);
         assertThrows(ResourceNotFoundException.class,
-                () -> flashcardService.getFlashcardById(99L));
+                () -> flashcardService.deleteFlashcard(999L));
+        verify(flashcardRepository, never()).deleteById(any());
     }
 
     @Test
-    void getFlashcardsByLesson_Success() {
+    void shouldReturnFlashcardsByLessonWithPagination() {
+        Long lessonId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
-        Page<FlashcardEntity> page = new PageImpl<>(List.of(flashcardEntity));
+        LessonEntity lesson = new LessonEntity();
+        lesson.setId(lessonId);
+        FlashcardEntity entity = new FlashcardEntity();
+        entity.setId(1L);
+        Page<FlashcardEntity> page = new PageImpl<>(List.of(entity));
+        when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
+        when(flashcardRepository.findByLessonEntity(lesson, pageable)).thenReturn(page);
+        when(flashcardMapper.toResponse(entity)).thenReturn(
+                FlashcardResponse.builder().id(1L).build());
+        Page<FlashcardResponse> result = flashcardService.getFlashcardsByLesson(lessonId, pageable);
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+    }
 
-        when(lessonRepository.findById(1L)).thenReturn(Optional.of(lessonEntity));
-        when(flashcardRepository.findByLessonEntity(lessonEntity, pageable)).thenReturn(page);
-        when(flashcardMapper.toResponse(any())).thenReturn(flashcardResponse);
-
-        Page<FlashcardResponse> response = flashcardService.getFlashcardsByLesson(1L, pageable);
-
-        assertNotNull(response);
-        assertEquals(1, response.getTotalElements());
+    @Test
+    void shouldSearchFlashcardsByTerm() {
+        Pageable pageable = PageRequest.of(0, 10);
+        FlashcardEntity entity = new FlashcardEntity();
+        entity.setId(1L);
+        entity.setTerm("vocabulary");
+        Page<FlashcardEntity> page = new PageImpl<>(List.of(entity));
+        when(flashcardRepository.findByTermContainingIgnoreCase("vocab", pageable))
+                .thenReturn(page);
+        when(flashcardMapper.toResponse(entity)).thenReturn(
+                FlashcardResponse.builder().id(1L).term("vocabulary").build());
+        Page<FlashcardResponse> result = flashcardService.searchByTerm("vocab", pageable);
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
     }
 }

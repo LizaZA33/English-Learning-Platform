@@ -1,8 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/myproject_db
-    username: postgres
-    password: antoni0paper0
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect

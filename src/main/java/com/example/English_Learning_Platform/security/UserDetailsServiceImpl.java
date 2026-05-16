@@ -16,18 +16,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
-
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь с email " + email + " не найден"));
-
         return org.springframework.security.core.userdetails.User.builder()
                 .username(userEntity.getEmail())
                 .password(userEntity.getPassword())
                 .authorities(userEntity.getRoles().stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                        .map(role -> new SimpleGrantedAuthority(role.name()))
                         .collect(Collectors.toList()))
                 .accountExpired(false)
                 .accountLocked(false)

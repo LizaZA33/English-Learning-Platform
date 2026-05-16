@@ -15,3 +15,4 @@ public class FlashcardResponse {
     private Integer difficulty;
     private Long lessonId;
 }
+

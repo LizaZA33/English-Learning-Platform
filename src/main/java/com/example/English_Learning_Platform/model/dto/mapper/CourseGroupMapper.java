@@ -1,6 +1,5 @@
 package com.example.English_Learning_Platform.model.dto.mapper;
 
-import com.example.English_Learning_Platform.model.dto.request.CourseGroupRequest;
 import com.example.English_Learning_Platform.model.dto.response.CourseGroupResponse;
 import com.example.English_Learning_Platform.model.dto.response.ModuleResponse;
 import com.example.English_Learning_Platform.model.dto.response.TeacherResponse;

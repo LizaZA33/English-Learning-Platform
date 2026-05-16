@@ -71,7 +71,7 @@ public class AuthService {
                 .id(saved.getId())
                 .email(saved.getEmail())
                 .fullName(fullName.trim())
-                .roles(rolesSet)
+                .roles(rolesSet.toString())
                 .build();
     }
 
@@ -106,7 +106,7 @@ public class AuthService {
                 .id(userEntity.getId())
                 .email(userEntity.getEmail())
                 .fullName(fullName.trim())
-                .roles(rolesSet)
+                .roles(rolesSet.toString())
                 .build();
     }
 

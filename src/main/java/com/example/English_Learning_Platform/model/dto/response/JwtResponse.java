@@ -1,7 +1,7 @@
 package com.example.English_Learning_Platform.model.dto.response;
 
 import lombok.*;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,5 +14,6 @@ public class JwtResponse {
     private Long id;
     private String email;
     private String fullName;
-    private Set<String> roles;
+    private String roles;
+    private List<String> permissions;
 }
