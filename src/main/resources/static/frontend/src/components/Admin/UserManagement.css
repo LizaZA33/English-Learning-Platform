@@ -1,0 +1,75 @@
+.user-management {
+  padding: 20px;
+}
+
+.user-management h1 {
+  margin-bottom: 30px;
+  color: var(--text-primary);
+}
+
+.users-table-container {
+  overflow-x: auto;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.users-table th,
+.users-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.users-table th {
+  background-color: #26689A;
+  color: white;
+  font-weight: bold;
+}
+
+.users-table tr:hover {
+  background-color: var(--bg-secondary);
+}
+
+.status-active {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.status-blocked {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.btn-success-sm {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.btn-warning-sm {
+  background-color: #ffc107;
+  color: #333;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.btn-success-sm:hover {
+  background-color: #218838;
+}
+
+.btn-warning-sm:hover {
+  background-color: #e0a800;
+}

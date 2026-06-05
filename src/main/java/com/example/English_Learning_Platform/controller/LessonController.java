@@ -31,7 +31,7 @@ public class LessonController {
     private final LessonService lessonService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('USER', 'TEACHER')")
+    @PreAuthorize("hasAnyRole('USER', 'TEACHER', 'STUDENT')")
     @Operation(
             summary = "Создать новый урок",
             description = "Создает урок. Пользователь может создать личный урок, учитель - урок от своего имени"
@@ -48,7 +48,7 @@ public class LessonController {
     }
 
     @GetMapping("/my")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'STUDENT', 'TEACHER')")
     @Operation(
             summary = "Получить мои личные уроки",
             description = "Возвращает список личных уроков текущего пользователя"

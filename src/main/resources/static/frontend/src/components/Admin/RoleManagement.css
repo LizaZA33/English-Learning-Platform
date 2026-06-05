@@ -1,0 +1,38 @@
+.role-management {
+  padding: 20px;
+}
+
+.role-management h1 {
+  margin-bottom: 30px;
+  color: var(--text-primary);
+}
+
+.role-form {
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 40px;
+  border: 1px solid var(--border);
+}
+
+.role-form h2 {
+  margin-bottom: 20px;
+  color: #6EB589;
+}
+
+.radio-group {
+  display: flex;
+  gap: 20px;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.users-list h2 {
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}

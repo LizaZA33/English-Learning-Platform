@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="v4-001-add-difficulty-check" author="admin">
+        <comment>Добавление проверки сложности карточек (1-5)</comment>
+        <sql>
+            ALTER TABLE flashcard ADD CONSTRAINT chk_difficulty_range
+            CHECK (difficulty &gt;= 1 AND difficulty &lt;= 5)
+        </sql>
+        <rollback>
+            ALTER TABLE flashcard DROP CONSTRAINT IF EXISTS chk_difficulty_range
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v4-002-add-progress-check" author="admin">
+        <comment>Добавление проверки процента прогресса (0-100)</comment>
+        <sql>
+            ALTER TABLE lecture_student ADD CONSTRAINT chk_lecture_progress_range
+            CHECK (progress_percent &gt;= 0 AND progress_percent &lt;= 100)
+        </sql>
+        <sql>
+            ALTER TABLE lesson_student ADD CONSTRAINT chk_lesson_progress_range
+            CHECK (progress_percent &gt;= 0 AND progress_percent &lt;= 100)
+        </sql>
+        <rollback>
+            ALTER TABLE lecture_student DROP CONSTRAINT IF EXISTS chk_lecture_progress_range;
+            ALTER TABLE lesson_student DROP CONSTRAINT IF EXISTS chk_lesson_progress_range
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v4-003-add-not-null-constraints" author="admin">
+        <comment>Добавление NOT NULL для обязательных полей</comment>
+        <addNotNullConstraint tableName="course_group"
+                              columnName="invite_code"
+                              columnDataType="VARCHAR(12)"/>
+        <rollback>
+            <dropNotNullConstraint tableName="course_group"
+                                   columnName="invite_code"
+                                   columnDataType="VARCHAR(12)"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v4-004-add-phone-format-check" author="admin">
+        <comment>Добавление проверки формата телефона</comment>
+        <sql>
+            ALTER TABLE teacher ADD CONSTRAINT chk_teacher_phone_format
+            CHECK (phone_number IS NULL OR phone_number ~ '^\+?[0-9]{11}$')
+        </sql>
+        <sql>
+            ALTER TABLE student ADD CONSTRAINT chk_student_phone_format
+            CHECK (phone_number IS NULL OR phone_number ~ '^\+?[0-9]{11}$')
+        </sql>
+        <rollback>
+            ALTER TABLE teacher DROP CONSTRAINT IF EXISTS chk_teacher_phone_format;
+            ALTER TABLE student DROP CONSTRAINT IF EXISTS chk_student_phone_format
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

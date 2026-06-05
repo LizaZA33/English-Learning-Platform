@@ -1,0 +1,48 @@
+// Находим все Docker-контейнеры
+discovery.docker "english_platform" {
+    host             = "unix:///var/run/docker.sock"
+    refresh_interval = "5s"
+}
+
+// Релейбл для получения имени контейнера
+discovery.relabel "english_platform" {
+    targets = []
+
+    rule {
+        source_labels = ["__meta_docker_container_name"]
+        regex         = "/(.*)"
+        target_label  = "container"
+    }
+}
+
+// Забираем логи из контейнеров
+loki.source.docker "english_platform" {
+    host             = "unix:///var/run/docker.sock"
+    targets          = discovery.docker.english_platform.targets
+    forward_to       = [loki.process.english_platform.receiver]
+    relabel_rules    = discovery.relabel.english_platform.rules
+    refresh_interval = "5s"
+}
+
+// Добавляем статичные метки
+loki.process "english_platform" {
+    stage.static_labels {
+        values = {
+            env = "production",
+            app = "english-learning-platform",   // ← ЗАПЯТАЯ В КОНЦЕ!
+        }
+    }
+    forward_to = [loki.write.english_platform.receiver]
+}
+
+// Отправляем логи в Loki
+loki.write "english_platform" {
+    endpoint {
+        url = "http://loki:3100/loki/api/v1/push"
+    }
+}
+
+// Включаем интерфейс для отладки
+livedebugging {
+    enabled = true
+}

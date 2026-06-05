@@ -1,0 +1,42 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+body.light {
+    background-color: #F5F5F5;
+    color: #333333;
+}
+
+body.dark {
+    background-color: #1a1a2e;
+    color: #E0E0E0;
+}
+
+body.light .main-content {
+    background-color: #F5F5F5;
+}
+
+body.dark .main-content {
+    background-color: #1a1a2e;
+}

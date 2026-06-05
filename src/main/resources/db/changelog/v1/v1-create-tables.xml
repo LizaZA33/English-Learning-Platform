@@ -5,10 +5,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="1-create-users-table" author="dev">
+    <changeSet id="v1-001-create-users-table" author="admin">
         <comment>Создание таблицы пользователей</comment>
         <createTable tableName="users">
-            <column name="id" type="BIGSERIAL">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="email" type="VARCHAR(100)">
@@ -26,28 +26,27 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="2-create-user-roles-table" author="dev">
+    <changeSet id="v1-002-create-user-roles-table" author="admin">
         <comment>Создание таблицы ролей пользователей</comment>
         <createTable tableName="user_roles">
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_user_roles_user"
-                             references="users(id)" deleteCascade="true"/>
+                             references="users(id)"/>
             </column>
             <column name="role_name" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addPrimaryKey tableName="user_roles" columnNames="user_id, role_name"
-                       constraintName="pk_user_roles"/>
+        <addPrimaryKey tableName="user_roles" columnNames="user_id, role_name"/>
         <rollback>
             <dropTable tableName="user_roles"/>
         </rollback>
     </changeSet>
 
-    <changeSet id="3-create-teacher-table" author="dev">
+    <changeSet id="v1-003-create-teacher-table" author="admin">
         <comment>Создание таблицы учителей</comment>
         <createTable tableName="teacher">
-            <column name="id" type="BIGSERIAL">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="user_id" type="BIGINT">
@@ -69,10 +68,10 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="4-create-student-table" author="dev">
+    <changeSet id="v1-004-create-student-table" author="admin">
         <comment>Создание таблицы студентов</comment>
         <createTable tableName="student">
-            <column name="id" type="BIGSERIAL">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="user_id" type="BIGINT">
@@ -95,25 +94,25 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="5-create-module-table" author="dev">
+    <changeSet id="v1-005-create-modules-table" author="admin">
         <comment>Создание таблицы модулей</comment>
-        <createTable tableName="module">
-            <column name="id" type="BIGSERIAL">
+        <createTable tableName="modules">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(100)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="module"/>
+            <dropTable tableName="modules"/>
         </rollback>
     </changeSet>
 
-    <changeSet id="6-create-course-group-table" author="dev">
+    <changeSet id="v1-006-create-course-group-table" author="admin">
         <comment>Создание таблицы учебных групп</comment>
         <createTable tableName="course_group">
-            <column name="id" type="BIGSERIAL">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(100)">
@@ -125,10 +124,10 @@
             </column>
             <column name="module_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_group_module"
-                             references="module(id)"/>
+                             references="modules(id)"/>
             </column>
             <column name="invite_code" type="VARCHAR(12)">
-                <constraints unique="true" uniqueConstraintName="uk_group_invite_code"/>
+                <constraints unique="true"/>
             </column>
         </createTable>
         <rollback>
@@ -136,10 +135,10 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="7-create-student-group-table" author="dev">
-        <comment>Создание таблицы связи студентов и групп</comment>
+    <changeSet id="v1-007-create-student-group-table" author="admin">
+        <comment>Создание связующей таблицы студент-группа</comment>
         <createTable tableName="student_group">
-            <column name="id" type="BIGSERIAL">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="student_id" type="BIGINT">
@@ -159,10 +158,10 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="8-create-lesson-table" author="dev">
+    <changeSet id="v1-008-create-lesson-table" author="admin">
         <comment>Создание таблицы уроков</comment>
         <createTable tableName="lesson">
-            <column name="id" type="BIGSERIAL">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="title" type="VARCHAR(100)">
@@ -181,80 +180,10 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="9-create-lecture-table" author="dev">
-        <comment>Создание таблицы лекций</comment>
-        <createTable tableName="lecture">
-            <column name="id" type="BIGSERIAL">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="title" type="VARCHAR(100)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="content" type="TEXT"/>
-            <column name="module_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_lecture_module"
-                             references="module(id)"/>
-            </column>
-        </createTable>
-        <rollback>
-            <dropTable tableName="lecture"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="10-create-lecture-student-table" author="dev">
-        <comment>Создание таблицы прогресса студентов по лекциям</comment>
-        <createTable tableName="lecture_student">
-            <column name="id" type="BIGSERIAL">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="lecture_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_lecture_student_lecture"
-                             references="lecture(id)" deleteCascade="true"/>
-            </column>
-            <column name="student_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_lecture_student_student"
-                             references="student(id)" deleteCascade="true"/>
-            </column>
-            <column name="progress_percent" type="INT" defaultValueNumeric="0"/>
-        </createTable>
-        <addUniqueConstraint tableName="lecture_student"
-                             columnNames="lecture_id, student_id"
-                             constraintName="uk_lecture_student"/>
-        <rollback>
-            <dropTable tableName="lecture_student"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="11-create-lesson-student-table" author="dev">
-        <comment>Создание таблицы прогресса студентов по урокам</comment>
-        <createTable tableName="lesson_student">
-            <column name="id" type="BIGSERIAL">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="lesson_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_lesson_student_lesson"
-                             references="lesson(id)" deleteCascade="true"/>
-            </column>
-            <column name="student_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_lesson_student_student"
-                             references="student(id)" deleteCascade="true"/>
-            </column>
-            <column name="progress_percent" type="INT" defaultValueNumeric="0"/>
-            <column name="cards_studied" type="INT" defaultValueNumeric="0"/>
-            <column name="total_cards" type="INT" defaultValueNumeric="0"/>
-        </createTable>
-        <addUniqueConstraint tableName="lesson_student"
-                             columnNames="lesson_id, student_id"
-                             constraintName="uk_lesson_student"/>
-        <rollback>
-            <dropTable tableName="lesson_student"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="12-create-flashcard-table" author="dev">
-        <comment>Создание таблицы карточек</comment>
+    <changeSet id="v1-009-create-flashcard-table" author="admin">
+        <comment>Создание таблицы флеш-карточек</comment>
         <createTable tableName="flashcard">
-            <column name="id" type="BIGSERIAL">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="lesson_id" type="BIGINT">
@@ -269,10 +198,90 @@
             </column>
             <column name="example" type="TEXT"/>
             <column name="translation" type="VARCHAR(100)"/>
-            <column name="difficulty" type="INT" defaultValueNumeric="1"/>
+            <column name="difficulty" type="INTEGER" defaultValueNumeric="1">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <rollback>
             <dropTable tableName="flashcard"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v1-010-create-lecture-table" author="admin">
+        <comment>Создание таблицы лекций</comment>
+        <createTable tableName="lecture">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="TEXT"/>
+            <column name="module_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_lecture_module"
+                             references="modules(id)"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="lecture"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v1-011-create-lecture-student-table" author="admin">
+        <comment>Создание таблицы прогресса по лекциям</comment>
+        <createTable tableName="lecture_student">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="lecture_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_lecture_student_lecture"
+                             references="lecture(id)" deleteCascade="true"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_lecture_student_student"
+                             references="student(id)" deleteCascade="true"/>
+            </column>
+            <column name="progress_percent" type="INTEGER" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="lecture_student"
+                             columnNames="lecture_id, student_id"
+                             constraintName="uk_lecture_student"/>
+        <rollback>
+            <dropTable tableName="lecture_student"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v1-012-create-lesson-student-table" author="admin">
+        <comment>Создание таблицы прогресса по урокам</comment>
+        <createTable tableName="lesson_student">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="lesson_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_lesson_student_lesson"
+                             references="lesson(id)" deleteCascade="true"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_lesson_student_student"
+                             references="student(id)" deleteCascade="true"/>
+            </column>
+            <column name="progress_percent" type="INTEGER" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cards_studied" type="INTEGER" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_cards" type="INTEGER" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="lesson_student"
+                             columnNames="lesson_id, student_id"
+                             constraintName="uk_lesson_student"/>
+        <rollback>
+            <dropTable tableName="lesson_student"/>
         </rollback>
     </changeSet>
 

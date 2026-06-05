@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="v2-001-insert-admin-user" author="admin">
+        <comment>Создание администратора</comment>
+        <insert tableName="users">
+            <column name="email" value="admin@platform.com"/>
+            <column name="password" value="$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email='admin@platform.com')"/>
+            <column name="role_name" value="USER"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email='admin@platform.com')"/>
+            <column name="role_name" value="ADMIN"/>
+        </insert>
+        <rollback>
+            <delete tableName="user_roles">
+                <where>user_id = (SELECT id FROM users WHERE email='admin@platform.com')</where>
+            </delete>
+            <delete tableName="users">
+                <where>email='admin@platform.com'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v2-002-insert-teacher-user" author="admin">
+        <comment>Создание учителя</comment>
+        <insert tableName="users">
+            <column name="email" value="teacher@platform.com"/>
+            <column name="password" value="$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email='teacher@platform.com')"/>
+            <column name="role_name" value="USER"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email='teacher@platform.com')"/>
+            <column name="role_name" value="TEACHER"/>
+        </insert>
+        <insert tableName="teacher">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email='teacher@platform.com')"/>
+            <column name="first_name" value="Мария"/>
+            <column name="last_name" value="Петрова"/>
+            <column name="patronymic" value="Сергеевна"/>
+            <column name="phone_number" value="+79991112233"/>
+        </insert>
+        <rollback>
+            <delete tableName="teacher">
+                <where>user_id = (SELECT id FROM users WHERE email='teacher@platform.com')</where>
+            </delete>
+            <delete tableName="user_roles">
+                <where>user_id = (SELECT id FROM users WHERE email='teacher@platform.com')</where>
+            </delete>
+            <delete tableName="users">
+                <where>email='teacher@platform.com'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v2-003-insert-student-user" author="admin">
+        <comment>Создание студента</comment>
+        <insert tableName="users">
+            <column name="email" value="student@platform.com"/>
+            <column name="password" value="$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email='student@platform.com')"/>
+            <column name="role_name" value="USER"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email='student@platform.com')"/>
+            <column name="role_name" value="STUDENT"/>
+        </insert>
+        <insert tableName="student">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email='student@platform.com')"/>
+            <column name="first_name" value="Иван"/>
+            <column name="last_name" value="Иванов"/>
+            <column name="patronymic" value="Петрович"/>
+            <column name="date_of_birth" value="2000-05-15"/>
+            <column name="phone_number" value="+79993334455"/>
+        </insert>
+        <rollback>
+            <delete tableName="student">
+                <where>user_id = (SELECT id FROM users WHERE email='student@platform.com')</where>
+            </delete>
+            <delete tableName="user_roles">
+                <where>user_id = (SELECT id FROM users WHERE email='student@platform.com')</where>
+            </delete>
+            <delete tableName="users">
+                <where>email='student@platform.com'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v2-004-insert-simple-user" author="admin">
+        <comment>Создание обычного пользователя</comment>
+        <insert tableName="users">
+            <column name="email" value="user@platform.com"/>
+            <column name="password" value="$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email='user@platform.com')"/>
+            <column name="role_name" value="USER"/>
+        </insert>
+        <rollback>
+            <delete tableName="user_roles">
+                <where>user_id = (SELECT id FROM users WHERE email='user@platform.com')</where>
+            </delete>
+            <delete tableName="users">
+                <where>email='user@platform.com'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v2-005-insert-modules" author="admin">
+        <comment>Создание учебных модулей</comment>
+        <insert tableName="modules">
+            <column name="name" value="Базовый уровень"/>
+        </insert>
+        <insert tableName="modules">
+            <column name="name" value="Средний уровень"/>
+        </insert>
+        <insert tableName="modules">
+            <column name="name" value="Продвинутый уровень"/>
+        </insert>
+        <rollback>
+            <delete tableName="modules">
+                <where>name IN ('Базовый уровень', 'Средний уровень', 'Продвинутый уровень')</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

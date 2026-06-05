@@ -1,5 +1,6 @@
 package com.example.English_Learning_Platform.controller;
 
+import com.example.English_Learning_Platform.model.dto.request.UserUpdateRequest;
 import com.example.English_Learning_Platform.model.dto.response.UserResponse;
 import com.example.English_Learning_Platform.model.enums.Role;
 import com.example.English_Learning_Platform.service.UserService;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -65,6 +67,23 @@ public class UserController {
             @Parameter(description = "true - добавить роль, false - удалить", example = "true")
             @RequestParam boolean add) {
         UserResponse response = userService.updateUserRole(userId, role, add);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/profile")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(
+            summary = "Обновить профиль текущего пользователя",
+            description = "Обновляет личные данные текущего пользователя"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Профиль обновлен",
+                    content = @Content(schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Ошибка валидации"),
+            @ApiResponse(responseCode = "404", description = "Пользователь не найден")
+    })
+    public ResponseEntity<UserResponse> updateProfile(@Valid @RequestBody UserUpdateRequest request) {
+        UserResponse response = userService.updateProfile(request);
         return ResponseEntity.ok(response);
     }
 

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="v5-001-create-demo-group" author="admin">
+        <comment>Создание демонстрационной группы</comment>
+        <insert tableName="course_group">
+            <column name="name" value="Английский для начинающих"/>
+            <column name="teacher_id" valueComputed="(SELECT id FROM teacher LIMIT 1)"/>
+            <column name="module_id" valueComputed="(SELECT id FROM modules WHERE name='Базовый уровень')"/>
+            <column name="invite_code" value="a1b2c3d4e5f6"/>
+        </insert>
+        <rollback>
+            <delete tableName="course_group">
+                <where>invite_code='a1b2c3d4e5f6'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v5-002-add-student-to-group" author="admin">
+        <comment>Добавление студента в группу</comment>
+        <insert tableName="student_group">
+            <column name="student_id" valueComputed="(SELECT id FROM student LIMIT 1)"/>
+            <column name="group_id" valueComputed="(SELECT id FROM course_group WHERE invite_code='a1b2c3d4e5f6')"/>
+        </insert>
+        <rollback>
+            <delete tableName="student_group">
+                <where>group_id = (SELECT id FROM course_group WHERE invite_code='a1b2c3d4e5f6')</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v5-003-create-teacher-lesson" author="admin">
+        <comment>Создание урока от учителя</comment>
+        <insert tableName="lesson">
+            <column name="title" value="Неправильные глаголы"/>
+            <column name="description" value="Изучение основных неправильных глаголов английского языка"/>
+            <column name="teacher_id" valueComputed="(SELECT id FROM teacher LIMIT 1)"/>
+        </insert>
+        <rollback>
+            <delete tableName="lesson">
+                <where>title='Неправильные глаголы' AND teacher_id IS NOT NULL</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v5-004-create-personal-lesson" author="admin">
+        <comment>Создание личного урока студента</comment>
+        <insert tableName="lesson">
+            <column name="title" value="Мои слова для путешествий"/>
+            <column name="description" value="Полезные слова и фразы для поездок"/>
+            <column name="owner_id" valueComputed="(SELECT id FROM users WHERE email='student@platform.com')"/>
+        </insert>
+        <rollback>
+            <delete tableName="lesson">
+                <where>title='Мои слова для путешествий' AND owner_id IS NOT NULL</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v5-005-insert-teacher-flashcards" author="admin">
+        <comment>Добавление карточек в урок учителя</comment>
+        <sql>
+            INSERT INTO flashcard (lesson_id, term, definition, example, translation, difficulty)
+            SELECT l.id, 'be', 'Used to describe a state or condition', 'I am a student', 'быть', 1
+            FROM lesson l WHERE l.title = 'Неправильные глаголы' AND l.teacher_id IS NOT NULL
+        </sql>
+        <sql>
+            INSERT INTO flashcard (lesson_id, term, definition, example, translation, difficulty)
+            SELECT l.id, 'go', 'To move from one place to another', 'I go to school every day', 'идти', 2
+            FROM lesson l WHERE l.title = 'Неправильные глаголы' AND l.teacher_id IS NOT NULL
+        </sql>
+        <sql>
+            INSERT INTO flashcard (lesson_id, term, definition, example, translation, difficulty)
+            SELECT l.id, 'have', 'To possess or own something', 'I have a dog', 'иметь', 1
+            FROM lesson l WHERE l.title = 'Неправильные глаголы' AND l.teacher_id IS NOT NULL
+        </sql>
+        <sql>
+            INSERT INTO flashcard (lesson_id, term, definition, example, translation, difficulty)
+            SELECT l.id, 'do', 'To perform an action', 'I do my homework', 'делать', 2
+            FROM lesson l WHERE l.title = 'Неправильные глаголы' AND l.teacher_id IS NOT NULL
+        </sql>
+        <sql>
+            INSERT INTO flashcard (lesson_id, term, definition, example, translation, difficulty)
+            SELECT l.id, 'make', 'To create or produce something', 'She makes delicious cakes', 'создавать', 3
+            FROM lesson l WHERE l.title = 'Неправильные глаголы' AND l.teacher_id IS NOT NULL
+        </sql>
+        <rollback>
+            <delete tableName="flashcard">
+                <where>lesson_id IN (SELECT id FROM lesson WHERE title='Неправильные глаголы' AND teacher_id IS NOT NULL)</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v5-006-insert-personal-flashcards" author="admin">
+        <comment>Добавление карточек в личный урок</comment>
+        <sql>
+            INSERT INTO flashcard (lesson_id, term, definition, example, translation, difficulty)
+            SELECT l.id, 'passport', 'Official document for travel', 'Show your passport at the border', 'паспорт', 1
+            FROM lesson l WHERE l.title = 'Мои слова для путешествий' AND l.owner_id IS NOT NULL
+        </sql>
+        <sql>
+            INSERT INTO flashcard (lesson_id, term, definition, example, translation, difficulty)
+            SELECT l.id, 'luggage', 'Bags and suitcases', 'My luggage was lost at the airport', 'багаж', 2
+            FROM lesson l WHERE l.title = 'Мои слова для путешествий' AND l.owner_id IS NOT NULL
+        </sql>
+        <sql>
+            INSERT INTO flashcard (lesson_id, term, definition, example, translation, difficulty)
+            SELECT l.id, 'ticket', 'A piece of paper for travel', 'I bought a ticket to Moscow', 'билет', 1
+            FROM lesson l WHERE l.title = 'Мои слова для путешествий' AND l.owner_id IS NOT NULL
+        </sql>
+        <rollback>
+            <delete tableName="flashcard">
+                <where>lesson_id IN (SELECT id FROM lesson WHERE title='Мои слова для путешествий' AND owner_id IS NOT NULL)</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v5-007-insert-lectures" author="admin">
+        <comment>Добавление лекций</comment>
+        <insert tableName="lecture">
+            <column name="title" value="Введение в английскую грамматику"/>
+            <column name="content" value="Английская грамматика — это система правил, которая определяет структуру выражений в английском языке."/>
+            <column name="module_id" valueComputed="(SELECT id FROM modules WHERE name='Базовый уровень')"/>
+        </insert>
+        <insert tableName="lecture">
+            <column name="title" value="Времена в английском языке"/>
+            <column name="content" value="В английском языке существует 12 основных времен, разделенных на три группы: Simple, Continuous, Perfect, Perfect Continuous."/>
+            <column name="module_id" valueComputed="(SELECT id FROM modules WHERE name='Базовый уровень')"/>
+        </insert>
+        <insert tableName="lecture">
+            <column name="title" value="Фразовые глаголы"/>
+            <column name="content" value="Фразовые глаголы (Phrasal Verbs) — это сочетания глагола с предлогом или наречием."/>
+            <column name="module_id" valueComputed="(SELECT id FROM modules WHERE name='Средний уровень')"/>
+        </insert>
+        <rollback>
+            <delete tableName="lecture">
+                <where>title IN ('Введение в английскую грамматику', 'Времена в английском языке', 'Фразовые глаголы')</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

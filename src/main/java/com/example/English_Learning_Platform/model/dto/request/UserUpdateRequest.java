@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,4 +24,6 @@ public class UserUpdateRequest {
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$",
             message = "Пароль должен содержать хотя бы одну цифру, одну букву в верхнем и нижнем регистре, и минимум один специальный символ")
     private String password;
+    private String phoneNumber;
+    private LocalDate dateOfBirth;
 }

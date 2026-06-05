@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="v3-001-add-email-index" author="admin">
+        <comment>Добавление индекса на email для быстрого поиска</comment>
+        <createIndex tableName="users" indexName="idx_users_email">
+            <column name="email"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="users" indexName="idx_users_email"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v3-002-add-flashcard-lesson-index" author="admin">
+        <comment>Добавление индекса для поиска карточек по уроку</comment>
+        <createIndex tableName="flashcard" indexName="idx_flashcard_lesson">
+            <column name="lesson_id"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="flashcard" indexName="idx_flashcard_lesson"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v3-003-add-flashcard-term-index" author="admin">
+        <comment>Добавление индекса для поиска по терминам</comment>
+        <createIndex tableName="flashcard" indexName="idx_flashcard_term">
+            <column name="term"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="flashcard" indexName="idx_flashcard_term"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v3-004-add-lecture-module-index" author="admin">
+        <comment>Добавление индекса для поиска лекций по модулю</comment>
+        <createIndex tableName="lecture" indexName="idx_lecture_module">
+            <column name="module_id"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="lecture" indexName="idx_lecture_module"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v3-005-add-lesson-teacher-index" author="admin">
+        <comment>Добавление индекса для поиска уроков по учителю</comment>
+        <createIndex tableName="lesson" indexName="idx_lesson_teacher">
+            <column name="teacher_id"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="lesson" indexName="idx_lesson_teacher"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v3-006-add-group-teacher-index" author="admin">
+        <comment>Добавление индекса для поиска групп по учителю</comment>
+        <createIndex tableName="course_group" indexName="idx_group_teacher">
+            <column name="teacher_id"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="course_group" indexName="idx_group_teacher"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="v3-007-add-invite-code-index" author="admin">
+        <comment>Добавление индекса для поиска по коду приглашения</comment>
+        <createIndex tableName="course_group" indexName="idx_group_invite_code" unique="true">
+            <column name="invite_code"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="course_group" indexName="idx_group_invite_code"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

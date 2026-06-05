@@ -1,0 +1,58 @@
+.teacher-dashboard {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.teacher-dashboard h1 {
+    color: #26689A;
+    margin-bottom: 24px;
+}
+
+body.dark .teacher-dashboard h1 {
+    color: #6EB589;
+}
+
+.teacher-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.teacher-card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 30px;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-top: 4px solid #6EB589;
+}
+
+body.dark .teacher-card {
+    background-color: #2D2D44;
+}
+
+.teacher-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.teacher-card h3 {
+    color: #333333;
+    margin-bottom: 8px;
+}
+
+body.dark .teacher-card h3 {
+    color: #E0E0E0;
+}
+
+.teacher-card p {
+    color: #666666;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+body.dark .teacher-card p {
+    color: #A0A0A0;
+}

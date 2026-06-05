@@ -32,51 +32,37 @@ public class LessonService {
 
     @Transactional
     public LessonResponse createLesson(LessonCreateRequest request) {
-        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserEntity userEntity = userRepository.findByEmail(currentUserEmail)
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден"));
 
-        LessonEntity lessonEntity = LessonEntity.builder()
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .build();
+        LessonEntity lesson = new LessonEntity();
+        lesson.setTitle(request.getTitle());
+        lesson.setDescription(request.getDescription());
 
         if (request.getTeacherId() != null) {
             TeacherEntity teacher = teacherRepository.findById(request.getTeacherId())
                     .orElseThrow(() -> new ResourceNotFoundException("Учитель не найден"));
-            if (!teacher.getUserEntity().getId().equals(userEntity.getId()) &&
-                    !userEntity.getRoles().contains(Role.ADMIN)) {
-                throw new ValidationException("Вы не можете создавать уроки от имени другого учителя");
-            }
-            lessonEntity.setTeacherEntity(teacher);
+            lesson.setTeacherEntity(teacher);
         } else {
-            lessonEntity.setOwner(userEntity);
+            lesson.setOwner(currentUser);
         }
 
-        LessonEntity saved = lessonRepository.save(lessonEntity);
-        log.info("Создан урок '{}'", saved.getTitle());
-        return lessonMapper.toResponse(saved);
+        lesson = lessonRepository.save(lesson);
+        return lessonMapper.toResponse(lesson);
     }
 
-    @Transactional
     public Page<LessonResponse> getPersonalLessons(Pageable pageable) {
-        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserEntity userEntity = userRepository.findByEmail(currentUserEmail)
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден"));
-        Page<LessonEntity> page = lessonRepository.findByOwnerId(userEntity.getId(), pageable);
-        return page.map(lessonMapper::toResponse);
+        return lessonRepository.findByOwnerId(currentUser.getId(), pageable).map(lessonMapper::toResponse);
     }
 
-    @Transactional
     public Page<LessonResponse> getTeacherLessons(Long teacherId, Pageable pageable) {
-        if (!teacherRepository.existsById(teacherId)) {
-            throw new ResourceNotFoundException("Учитель не найден");
-        }
-        Page<LessonEntity> page = lessonRepository.findByTeacherId(teacherId, pageable);
-        return page.map(lessonMapper::toResponse);
+        return lessonRepository.findByTeacherId(teacherId, pageable).map(lessonMapper::toResponse);
     }
 
-    @Transactional
     public LessonResponse getLessonById(Long id) {
         LessonEntity lesson = lessonRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Урок не найден"));
@@ -87,13 +73,10 @@ public class LessonService {
     public LessonResponse updateLesson(Long id, LessonCreateRequest request) {
         LessonEntity lesson = lessonRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Урок не найден"));
-
-        if (request.getTitle() != null) lesson.setTitle(request.getTitle());
-        if (request.getDescription() != null) lesson.setDescription(request.getDescription());
-
-        LessonEntity saved = lessonRepository.save(lesson);
-        log.info("Обновлён урок '{}'", saved.getTitle());
-        return lessonMapper.toResponse(saved);
+        lesson.setTitle(request.getTitle());
+        lesson.setDescription(request.getDescription());
+        lesson = lessonRepository.save(lesson);
+        return lessonMapper.toResponse(lesson);
     }
 
     @Transactional
@@ -101,6 +84,5 @@ public class LessonService {
         LessonEntity lesson = lessonRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Урок не найден"));
         lessonRepository.delete(lesson);
-        log.info("Удалён урок '{}'", lesson.getTitle());
     }
 }

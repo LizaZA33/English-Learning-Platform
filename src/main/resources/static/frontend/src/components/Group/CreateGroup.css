@@ -1,0 +1,27 @@
+.create-group-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.create-group-card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+body.dark .create-group-card {
+    background-color: #2D2D44;
+}
+
+.create-group-card h1 {
+    color: #26689A;
+    margin-bottom: 24px;
+}
+
+body.dark .create-group-card h1 {
+    color: #6EB589;
+}

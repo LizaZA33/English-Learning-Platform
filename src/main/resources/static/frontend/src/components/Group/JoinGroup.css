@@ -1,0 +1,144 @@
+.join-group-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 100px);
+    padding: 20px;
+}
+
+.join-group-card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+body.dark .join-group-card {
+    background-color: #2D2D44;
+}
+
+.join-group-card h1 {
+    color: #26689A;
+    margin-bottom: 12px;
+    font-size: 24px;
+}
+
+body.dark .join-group-card h1 {
+    color: #6EB589;
+}
+
+.join-description {
+    color: #666666;
+    font-size: 14px;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+body.dark .join-description {
+    color: #A0A0A0;
+}
+
+.code-input-wrapper {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.code-input {
+    flex: 1;
+    text-align: center;
+    font-size: 20px;
+    letter-spacing: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.paste-btn {
+    background-color: #A6C1A0;
+    color: #FFFFFF;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: background-color 0.3s;
+}
+
+.paste-btn:hover {
+    background-color: #8BAE85;
+}
+
+.code-hint {
+    color: #A0A0A0;
+    font-size: 12px;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+body.dark .code-hint {
+    color: #808080;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.btn-primary:disabled {
+    background-color: #A0C8B0;
+    cursor: not-allowed;
+}
+
+body.dark .btn-primary:disabled {
+    background-color: #4A6A5A;
+}
+
+.join-info {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #E0E0E0;
+    text-align: left;
+}
+
+body.dark .join-info {
+    border-top-color: #4A4A65;
+}
+
+.join-info h3 {
+    color: #333333;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+body.dark .join-info h3 {
+    color: #E0E0E0;
+}
+
+.join-info p {
+    color: #666666;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+body.dark .join-info p {
+    color: #A0A0A0;
+}
+
+.success-message {
+    background-color: #E8F5E9;
+    border: 1px solid #66BB6A;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    color: #2E7D32;
+    font-size: 14px;
+}
+
+body.dark .success-message {
+    background-color: #1B3A1B;
+    border-color: #4CAF50;
+    color: #81C784;
+}

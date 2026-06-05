@@ -1,0 +1,178 @@
+.group-list-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.group-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.group-list-header h1 {
+    color: #26689A;
+}
+
+body.dark .group-list-header h1 {
+    color: #6EB589;
+}
+
+.group-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.group-card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-top: 4px solid #6EB589;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+body.dark .group-card {
+    background-color: #2D2D44;
+}
+
+.group-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.group-card h3 {
+    color: #333333;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+body.dark .group-card h3 {
+    color: #E0E0E0;
+}
+
+.group-module {
+    display: inline-block;
+    background-color: #A6C1A0;
+    color: #FFFFFF;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-bottom: 12px;
+}
+
+.group-teacher {
+    color: #666666;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+body.dark .group-teacher {
+    color: #A0A0A0;
+}
+
+.group-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid #E0E0E0;
+}
+
+body.dark .group-footer {
+    border-top-color: #4A4A65;
+}
+
+.student-count {
+    color: #26689A;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+body.dark .student-count {
+    color: #6EB589;
+}
+
+.copy-code-btn {
+    background: none;
+    border: 1px solid #6EB589;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    color: #333333;
+}
+
+body.dark .copy-code-btn {
+    border-color: #5a9e74;
+    color: #E0E0E0;
+}
+
+.copy-code-btn:hover {
+    background-color: rgba(110, 181, 137, 0.1);
+    border-color: #5a9e74;
+}
+
+.invite-code-label {
+    color: #A0A0A0;
+    font-size: 12px;
+    font-family: monospace;
+}
+
+body.dark .invite-code-label {
+    color: #808080;
+}
+
+.copy-icon {
+    color: #6EB589;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+body.dark .copy-icon {
+    color: #5a9e74;
+}
+
+.copied-text {
+    color: #6EB589;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+body.dark .copied-text {
+    color: #5a9e74;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+body.dark .empty-state {
+    background-color: #2D2D44;
+}
+
+.empty-state p {
+    color: #666666;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+body.dark .empty-state p {
+    color: #A0A0A0;
+}

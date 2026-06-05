@@ -1,0 +1,75 @@
+.student-dashboard {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.student-dashboard h1 {
+    color: #26689A;
+    margin-bottom: 24px;
+}
+
+body.dark .student-dashboard h1 {
+    color: #6EB589;
+}
+
+.progress-sections {
+    display: grid;
+    gap: 24px;
+}
+
+.progress-section {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+body.dark .progress-section {
+    background-color: #2D2D44;
+}
+
+.progress-section h2 {
+    color: #26689A;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+body.dark .progress-section h2 {
+    color: #6EB589;
+}
+
+.no-data {
+    color: #666666;
+    font-style: italic;
+    padding: 20px 0;
+}
+
+body.dark .no-data {
+    color: #A0A0A0;
+}
+
+.progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.progress-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #333333;
+}
+
+body.dark .progress-item-header {
+    color: #E0E0E0;
+}
+
+.progress-value {
+    font-weight: 600;
+    color: #6EB589;
+    font-size: 14px;
+}

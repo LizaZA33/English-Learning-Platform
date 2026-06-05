@@ -1,0 +1,156 @@
+.create-set-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.create-set-container h1 {
+    color: #26689A;
+    margin-bottom: 24px;
+}
+
+body.dark .create-set-container h1 {
+    color: #6EB589;
+}
+
+.create-set-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.set-info {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+body.dark .set-info {
+    background-color: #2D2D44;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.cards-section {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+body.dark .cards-section {
+    background-color: #2D2D44;
+}
+
+.cards-section h2 {
+    color: #26689A;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+body.dark .cards-section h2 {
+    color: #6EB589;
+}
+
+.card-editor {
+    background-color: #F5F5F5;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 2px solid #E0E0E0;
+}
+
+body.dark .card-editor {
+    background-color: #3A3A55;
+    border-color: #4A4A65;
+}
+
+.card-editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: #333333;
+}
+
+body.dark .card-editor-header {
+    color: #E0E0E0;
+}
+
+.btn-remove {
+    background-color: #D32F2F;
+    color: #FFFFFF;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn-remove:hover {
+    background-color: #B71C1C;
+}
+
+.card-editor-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 600px) {
+    .card-editor-fields {
+        grid-template-columns: 1fr;
+    }
+}
+
+.btn-add-card {
+    width: 100%;
+    background-color: transparent;
+    color: #6EB589;
+    border: 2px dashed #6EB589;
+    padding: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-add-card:hover {
+    background-color: rgba(110, 181, 137, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn-cancel {
+    background-color: #E0E0E0;
+    color: #333333;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+body.dark .btn-cancel {
+    background-color: #4A4A65;
+    color: #E0E0E0;
+}
+
+.btn-cancel:hover {
+    background-color: #CCCCCC;
+}
+
+body.dark .btn-cancel:hover {
+    background-color: #5A5A75;
+}

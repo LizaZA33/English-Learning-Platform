@@ -1,0 +1,49 @@
+.error-message {
+    background-color: #FFE4E4;
+    border: 1px solid #FF6B6B;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideIn 0.3s ease;
+}
+
+body.dark .error-message {
+    background-color: #3D2020;
+    border-color: #FF6B6B;
+}
+
+.error-text {
+    color: #D32F2F;
+    font-size: 14px;
+}
+
+body.dark .error-text {
+    color: #FF8A8A;
+}
+
+.error-close {
+    background: none;
+    border: none;
+    color: #D32F2F;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 4px;
+}
+
+body.dark .error-close {
+    color: #FF8A8A;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

@@ -13,7 +13,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
@@ -21,7 +21,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   liquibase:
-    enabled: false
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
 
 jwt:
   secret: ${JWT_SECRET:mySuperSecretKeyForJwtTokenGenerationMustBeAtLeast256BitsLongAndSecure}
@@ -30,8 +31,10 @@ jwt:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+    enabled: true
   api-docs:
     path: /v3/api-docs
+    enabled: true
 
 logging:
   level:
@@ -39,5 +42,23 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    liquibase: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,prometheus,metrics"
+      base-path: /actuator
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: english-learning-platform
+  endpoint:
+    prometheus:
+      enabled: true
+    metrics:
+      enabled: true
+    health:
+      show-details: always

@@ -1,0 +1,138 @@
+.flashcard-set-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.set-breadcrumb {
+    margin-bottom: 20px;
+    color: #666666;
+    font-size: 14px;
+}
+
+body.dark .set-breadcrumb {
+    color: #A0A0A0;
+}
+
+.set-breadcrumb a {
+    color: #26689A;
+    text-decoration: none;
+}
+
+body.dark .set-breadcrumb a {
+    color: #6EB589;
+}
+
+.set-breadcrumb span {
+    margin: 0 8px;
+}
+
+.set-header {
+    margin-bottom: 24px;
+}
+
+.set-header h1 {
+    color: #26689A;
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+body.dark .set-header h1 {
+    color: #6EB589;
+}
+
+.set-header p {
+    color: #666666;
+    font-size: 16px;
+}
+
+body.dark .set-header p {
+    color: #A0A0A0;
+}
+
+.study-modes {
+    margin-bottom: 30px;
+}
+
+.btn-study {
+    font-size: 18px;
+    padding: 16px 40px;
+}
+
+.cards-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.card-item {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #6EB589;
+}
+
+body.dark .card-item {
+    background-color: #2D2D44;
+}
+
+.card-front {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.card-term {
+    font-size: 18px;
+    font-weight: 600;
+    color: #26689A;
+}
+
+body.dark .card-term {
+    color: #6EB589;
+}
+
+.card-difficulty {
+    color: #FFD700;
+    font-size: 14px;
+}
+
+.card-back {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.card-translation {
+    font-size: 16px;
+    color: #333333;
+    font-weight: 500;
+}
+
+body.dark .card-translation {
+    color: #E0E0E0;
+}
+
+.card-definition {
+    color: #666666;
+    font-size: 14px;
+    font-style: italic;
+}
+
+body.dark .card-definition {
+    color: #A0A0A0;
+}
+
+.card-example {
+    color: #15669D;
+    font-size: 14px;
+    padding: 8px 12px;
+    background-color: #F0F7FF;
+    border-radius: 6px;
+}
+
+body.dark .card-example {
+    background-color: #1a3a5c;
+    color: #94BCB4;
+}

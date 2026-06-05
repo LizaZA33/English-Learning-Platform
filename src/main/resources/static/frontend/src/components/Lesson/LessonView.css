@@ -1,0 +1,140 @@
+.lesson-view-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.lesson-breadcrumb {
+    margin-bottom: 20px;
+    color: #666666;
+    font-size: 14px;
+}
+
+body.dark .lesson-breadcrumb {
+    color: #A0A0A0;
+}
+
+.lesson-breadcrumb a {
+    color: #26689A;
+    text-decoration: none;
+}
+
+body.dark .lesson-breadcrumb a {
+    color: #6EB589;
+}
+
+.lesson-header {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+body.dark .lesson-header {
+    background-color: #2D2D44;
+}
+
+.lesson-header h1 {
+    color: #26689A;
+    margin-bottom: 8px;
+}
+
+body.dark .lesson-header h1 {
+    color: #6EB589;
+}
+
+.lesson-header p {
+    color: #666666;
+    margin-bottom: 12px;
+}
+
+body.dark .lesson-header p {
+    color: #A0A0A0;
+}
+
+.lesson-teacher-info {
+    color: #15669D;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+body.dark .lesson-teacher-info {
+    color: #94BCB4;
+}
+
+.lesson-flashcards {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+body.dark .lesson-flashcards {
+    background-color: #2D2D44;
+}
+
+.lesson-flashcards h2 {
+    color: #26689A;
+    margin-bottom: 20px;
+}
+
+body.dark .lesson-flashcards h2 {
+    color: #6EB589;
+}
+
+.btn-study {
+    margin-bottom: 24px;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.flashcards-list {
+    display: grid;
+    gap: 12px;
+}
+
+.lesson-flashcard-item {
+    background-color: #F5F5F5;
+    border-radius: 8px;
+    padding: 16px;
+    border-left: 4px solid #6EB589;
+}
+
+body.dark .lesson-flashcard-item {
+    background-color: #3A3A55;
+}
+
+.flashcard-term {
+    font-size: 16px;
+    font-weight: 600;
+    color: #26689A;
+    margin-bottom: 4px;
+}
+
+body.dark .flashcard-term {
+    color: #6EB589;
+}
+
+.flashcard-translation {
+    font-size: 14px;
+    color: #333333;
+}
+
+body.dark .flashcard-translation {
+    color: #E0E0E0;
+}
+
+.flashcard-example {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background-color: #E8F0FE;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #15669D;
+}
+
+body.dark .flashcard-example {
+    background-color: #1a3a5c;
+    color: #94BCB4;
+}
