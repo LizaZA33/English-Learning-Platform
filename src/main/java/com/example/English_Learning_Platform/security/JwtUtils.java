@@ -6,7 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -32,13 +32,18 @@ public class JwtUtils {
     }
 
     public String generateJwtToken(Authentication authentication) {
-        UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+        org.springframework.security.core.userdetails.User userPrincipal =
+                (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        List<String> roles = userPrincipal.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .map(authority -> authority.replace("ROLE_", ""))
+                .collect(Collectors.toList());
+
+        log.info("Generating token for user: {}, roles: {}", userPrincipal.getUsername(), roles);
 
         return Jwts.builder()
                 .subject(userPrincipal.getUsername())
-                .claim("roles", userPrincipal.getAuthorities().stream()
-                        .map(authority -> authority.getAuthority())
-                        .collect(Collectors.toList()))
+                .claim("roles", roles)
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(getSigningKey())

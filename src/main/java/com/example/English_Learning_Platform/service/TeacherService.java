@@ -88,10 +88,8 @@ public class TeacherService {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         UserEntity userEntity = userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден"));
-
         TeacherEntity teacherEntity = teacherRepository.findByUserId(userEntity.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Профиль учителя не найден"));
-
         if (request.getFirstName() != null) teacherEntity.setFirstName(request.getFirstName());
         if (request.getLastName() != null) teacherEntity.setLastName(request.getLastName());
         if (request.getPatronymic() != null) teacherEntity.setPatronymic(request.getPatronymic());

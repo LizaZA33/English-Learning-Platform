@@ -73,3 +73,29 @@ body.dark .progress-item-header {
     color: #6EB589;
     font-size: 14px;
 }
+
+.no-group-message {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+body.dark .no-group-message {
+    background-color: #2D2D44;
+}
+
+.no-group-message p {
+    color: #666666;
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+body.dark .no-group-message p {
+    color: #A0A0A0;
+}
+
+.no-group-message .btn-primary {
+    margin-top: 20px;
+}

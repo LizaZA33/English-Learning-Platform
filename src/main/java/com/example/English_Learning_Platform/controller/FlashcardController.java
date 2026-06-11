@@ -31,7 +31,7 @@ public class FlashcardController {
     private final FlashcardService flashcardService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('USER', 'TEACHER')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Создать флеш-карточку",
             description = "Создает новую карточку в указанном уроке"
@@ -48,7 +48,7 @@ public class FlashcardController {
     }
 
     @GetMapping("/lesson/{lessonId}")
-    @PreAuthorize("@flashcardSecurity.hasAccessToLesson(#lessonId)")
+    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Получить карточки урока",
             description = "Возвращает все карточки для указанного урока"
@@ -66,7 +66,7 @@ public class FlashcardController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("@flashcardSecurity.hasAccessToFlashcard(#id)")
+    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Получить карточку по ID",
             description = "Возвращает детальную информацию о карточке"
@@ -84,7 +84,7 @@ public class FlashcardController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("@flashcardSecurity.canModifyFlashcard(#id)")
+    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Обновить карточку",
             description = "Обновляет содержимое карточки"
@@ -104,7 +104,7 @@ public class FlashcardController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("@flashcardSecurity.canModifyFlashcard(#id)")
+    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Удалить карточку",
             description = "Удаляет карточку"
@@ -122,7 +122,7 @@ public class FlashcardController {
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('USER', 'TEACHER', 'STUDENT', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Поиск карточек по термину",
             description = "Ищет карточки по вхождению текста в термин"

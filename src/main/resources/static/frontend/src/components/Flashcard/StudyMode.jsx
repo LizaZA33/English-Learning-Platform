@@ -14,6 +14,7 @@ const StudyMode = () => {
     const [completed, setCompleted] = useState(false);
     const [results, setResults] = useState({ correct: 0, incorrect: 0 });
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         loadLesson();
@@ -21,15 +22,23 @@ const StudyMode = () => {
 
     const loadLesson = async () => {
         try {
+            setLoading(true);
             const response = await lessonService.getById(lessonId);
             const lessonData = response.data;
             setLesson(lessonData);
-            if (lessonData.flashcards) {
-                const shuffled = [...lessonData.flashcards].sort(() => Math.random() - 0.5);
-                setCards(shuffled);
+            let flashcards = [];
+            if (lessonData.flashcards && Array.isArray(lessonData.flashcards)) {
+                flashcards = [...lessonData.flashcards];
+            } else if (lessonData.flashcardEntities && Array.isArray(lessonData.flashcardEntities)) {
+                flashcards = [...lessonData.flashcardEntities];
+            } else if (lessonData.cards && Array.isArray(lessonData.cards)) {
+                flashcards = [...lessonData.cards];
             }
+            const shuffled = flashcards.sort(() => Math.random() - 0.5);
+            setCards(shuffled);
         } catch (err) {
             console.error('Ошибка загрузки:', err);
+            setError('Ошибка загрузки набора карточек');
         } finally {
             setLoading(false);
         }
@@ -68,6 +77,23 @@ const StudyMode = () => {
         return <div className="loading">Загрузка...</div>;
     }
 
+    if (error) {
+        return <div className="error-message">{error}</div>;
+    }
+
+    if (!cards || cards.length === 0) {
+        return (
+            <div className="study-mode-container">
+                <div className="mode-selection">
+                    <h1>В этом наборе нет карточек</h1>
+                    <Link to={`/flashcards/${lessonId}`} className="btn-primary">
+                        Вернуться к набору
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
     if (mode === 'selection') {
         return (
             <div className="study-mode-container">
@@ -93,15 +119,6 @@ const StudyMode = () => {
                             <p>Английский - Русский</p>
                             <span className="mode-icon">EN - RU</span>
                         </button>
-                        
-                        <button 
-                            className="mode-card"
-                            onClick={() => { setMode('written'); setDirection('ru-en'); }}
-                        >
-                            <h3>Письменный перевод</h3>
-                            <p>Русский - Английский</p>
-                            <span className="mode-icon">RU - EN</span>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -110,7 +127,7 @@ const StudyMode = () => {
 
     if (completed) {
         const total = results.correct + results.incorrect;
-        const percentage = Math.round((results.correct / total) * 100);
+        const percentage = total > 0 ? Math.round((results.correct / total) * 100) : 0;
 
         return (
             <div className="study-mode-container">
@@ -141,6 +158,9 @@ const StudyMode = () => {
             </div>
         );
     }
+    if (!cards[currentIndex]) {
+        return <div className="loading">Загрузка карточки...</div>;
+    }
 
     const currentCard = cards[currentIndex];
 
@@ -168,7 +188,9 @@ const StudyMode = () => {
                             {direction === 'ru-en' ? 'Русский' : 'Английский'}
                         </span>
                         <span className="card-word">
-                            {direction === 'ru-en' ? currentCard.translation : currentCard.term}
+                            {direction === 'ru-en' 
+                                ? (currentCard.translation || 'Перевод не указан')
+                                : (currentCard.term || 'Термин не указан')}
                         </span>
                         {!flipped && (
                             <span className="flip-hint">Нажмите, чтобы увидеть перевод</span>
@@ -179,7 +201,9 @@ const StudyMode = () => {
                             {direction === 'ru-en' ? 'Английский' : 'Русский'}
                         </span>
                         <span className="card-word">
-                            {direction === 'ru-en' ? currentCard.term : currentCard.translation}
+                            {direction === 'ru-en' 
+                                ? (currentCard.term || 'Термин не указан')
+                                : (currentCard.translation || 'Перевод не указан')}
                         </span>
                         {currentCard.example && (
                             <p className="card-example">{currentCard.example}</p>

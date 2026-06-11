@@ -24,8 +24,8 @@ const JoinGroup = () => {
         setLoading(true);
 
         try {
-            const response = await groupService.join(inviteCode.trim());
-            setSuccess('Вы успешно вступили в группу! Теперь у вас есть доступ к лекциям и урокам.');
+            await groupService.join(inviteCode.trim());
+            setSuccess('Вы успешно вступили в группу!');
             setTimeout(() => {
                 navigate('/groups');
             }, 2000);
@@ -35,7 +35,7 @@ const JoinGroup = () => {
             } else if (err.response?.status === 400) {
                 setError('Вы уже состоите в этой группе');
             } else {
-                setError('Ошибка при вступлении в группу');
+                setError(err.response?.data?.message || 'Ошибка при вступлении в группу');
             }
         } finally {
             setLoading(false);
@@ -56,8 +56,7 @@ const JoinGroup = () => {
             <div className="join-group-card">
                 <h1>Вступить в группу</h1>
                 <p className="join-description">
-                    Введите код приглашения, полученный от учителя, чтобы присоединиться к учебной группе.
-                    После вступления вы получите доступ к лекциям, урокам и наборам карточек от преподавателя.
+                    Введите код приглашения, полученный от учителя
                 </p>
 
                 <ErrorMessage message={error} onClose={() => setError('')} />
@@ -76,8 +75,8 @@ const JoinGroup = () => {
                                 id="inviteCode"
                                 type="text"
                                 value={inviteCode}
-                                onChange={(e) => setInviteCode(e.target.value)}
-                                placeholder="XXXXXXXXXXXX"
+                                onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                                placeholder="XXXXXX"
                                 className="form-input code-input"
                                 maxLength={12}
                                 autoComplete="off"
@@ -86,12 +85,11 @@ const JoinGroup = () => {
                                 type="button" 
                                 className="paste-btn"
                                 onClick={handlePaste}
-                                title="Вставить из буфера"
                             >
                                 Вставить
                             </button>
                         </div>
-                        <p className="code-hint">Код состоит из 12 символов (буквы и цифры)</p>
+                        <p className="code-hint">Код можно скопировать из карточки группы у учителя</p>
                     </div>
 
                     <button 
@@ -102,11 +100,6 @@ const JoinGroup = () => {
                         {loading ? 'Вступление...' : 'Вступить в группу'}
                     </button>
                 </form>
-
-                <div className="join-info">
-                    <h3>Как получить код?</h3>
-                    <p>Попросите код у вашего преподавателя. Код приглашения отображается в карточке группы у учителя.</p>
-                </div>
             </div>
         </div>
     );

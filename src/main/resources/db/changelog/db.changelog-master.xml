@@ -10,5 +10,6 @@
     <include file="db/changelog/v3/v3-add-indexes.xml"/>
     <include file="db/changelog/v4/v4-add-constraints.xml"/>
     <include file="db/changelog/v5/v5-insert-demo-content.xml"/>
+    <include file="db/changelog/v6/v6-fix-passwords-and-roles.xml"/>
 
 </databaseChangeLog>

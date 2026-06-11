@@ -19,8 +19,9 @@ const Login = () => {
 
         try {
             await login(email, password);
-            navigate('/flashcards');
+            navigate('/flashcards', { replace: true });
         } catch (err) {
+            console.error('Login error:', err);
             if (err.response?.status === 401) {
                 setError('Неверный email или пароль');
             } else if (err.response?.status === 403) {
@@ -52,6 +53,7 @@ const Login = () => {
                             placeholder="Введите ваш email"
                             required
                             className="form-input"
+                            autoComplete="email"
                         />
                     </div>
 
@@ -65,6 +67,7 @@ const Login = () => {
                             placeholder="Введите пароль"
                             required
                             className="form-input"
+                            autoComplete="current-password"
                         />
                     </div>
 

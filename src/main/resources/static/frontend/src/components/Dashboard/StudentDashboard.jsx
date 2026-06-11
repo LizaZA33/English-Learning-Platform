@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { progressService } from '../../services/progressService';
+import { useAuth } from '../../contexts/AuthContext';
 import ErrorMessage from '../Common/ErrorMessage';
 import './StudentDashboard.css';
 
@@ -8,10 +9,18 @@ const StudentDashboard = () => {
     const [lessonProgress, setLessonProgress] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const { user, hasRole } = useAuth();
+
+    // Проверка, есть ли у студента группа
+    const hasGroup = user?.student?.groups && user.student.groups.length > 0;
 
     useEffect(() => {
-        loadProgress();
-    }, []);
+        if (hasRole('STUDENT') && hasGroup) {
+            loadProgress();
+        } else {
+            setLoading(false);
+        }
+    }, [hasRole, hasGroup]);
 
     const loadProgress = async () => {
         try {
@@ -22,7 +31,12 @@ const StudentDashboard = () => {
             setLectureProgress(lectureRes.data.content || []);
             setLessonProgress(lessonRes.data.content || []);
         } catch (err) {
-            setError('Ошибка загрузки прогресса');
+            console.error('Progress error:', err);
+            if (err.response?.status === 403) {
+                setError('У вас нет доступа к прогрессу. Возможно, вы не состоите в группе.');
+            } else {
+                setError('Ошибка загрузки прогресса');
+            }
         } finally {
             setLoading(false);
         }
@@ -30,6 +44,24 @@ const StudentDashboard = () => {
 
     if (loading) {
         return <div className="loading">Загрузка прогресса...</div>;
+    }
+
+    if (!hasGroup) {
+        return (
+            <div className="student-dashboard">
+                <h1>Мой прогресс</h1>
+                <div className="no-group-message">
+                    <p>Вы пока не состоите ни в одной учебной группе.</p>
+                    <p>Попросите у учителя код приглашения и вступите в группу через раздел "Вступить в группу".</p>
+                    <button 
+                        onClick={() => window.location.href = '/groups/join'}
+                        className="btn-primary"
+                    >
+                        Вступить в группу
+                    </button>
+                </div>
+            </div>
+        );
     }
 
     return (

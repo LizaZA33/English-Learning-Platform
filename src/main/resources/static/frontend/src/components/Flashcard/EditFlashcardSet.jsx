@@ -1,86 +1,153 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// src/components/Flashcard/EditFlashcardSet.jsx
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { lessonService } from '../../services/lessonService';
 import { flashcardService } from '../../services/flashcardService';
 import { useAuth } from '../../contexts/AuthContext';
 import ErrorMessage from '../Common/ErrorMessage';
 import './CreateFlashcardSet.css';
-const CreateFlashcardSet = () => {
+
+const EditFlashcardSet = () => {
+    const { lessonId } = useParams();
     const navigate = useNavigate();
     const { user, hasRole } = useAuth();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [flashcards, setFlashcards] = useState([
-        { term: '', definition: '', example: '', translation: '', difficulty: 1 }
-    ]);
+    const [flashcards, setFlashcards] = useState([]);
+    const [originalFlashcards, setOriginalFlashcards] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [canEdit, setCanEdit] = useState(false);
+
+    useEffect(() => {
+        loadLesson();
+    }, [lessonId]);
+
+    const loadLesson = async () => {
+        try {
+            const response = await lessonService.getById(lessonId);
+            const lesson = response.data;
+            setTitle(lesson.title);
+            setDescription(lesson.description || '');
+            
+            const cards = lesson.flashcards || lesson.flashcardEntities || [];
+            setFlashcards(cards.map(card => ({
+                id: card.id,
+                term: card.term || '',
+                definition: card.definition || '',
+                example: card.example || '',
+                translation: card.translation || '',
+                difficulty: card.difficulty || 1
+            })));
+            setOriginalFlashcards(cards.map(card => card.id));
+            
+            const isOwner = lesson.owner?.id === user?.id;
+            const isTeacher = hasRole('TEACHER') && lesson.teacher?.id === user?.teacher?.id;
+            const isAdmin = hasRole('ADMIN');
+            
+            if (isOwner || isTeacher || isAdmin) {
+                setCanEdit(true);
+            } else {
+                setError('У вас нет прав на редактирование этого набора');
+            }
+        } catch (err) {
+            setError('Ошибка загрузки набора');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const addCard = () => {
         setFlashcards([...flashcards, { term: '', definition: '', example: '', translation: '', difficulty: 1 }]);
     };
+
     const removeCard = (index) => {
         if (flashcards.length > 1) {
             setFlashcards(flashcards.filter((_, i) => i !== index));
         }
     };
+
     const updateCard = (index, field, value) => {
         const updated = flashcards.map((card, i) => 
             i === index ? { ...card, [field]: value } : card
         );
         setFlashcards(updated);
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-
+        
         if (!title.trim()) {
             setError('Введите название набора');
             return;
         }
+
         const invalidCards = flashcards.filter(card => !card.term.trim() || !card.translation.trim());
         if (invalidCards.length > 0) {
             setError('Все карточки должны содержать термин и перевод');
             return;
         }
-        setLoading(true);
+
+        setSaving(true);
+
         try {
-            const lessonData = {
-                title,
-                description
-            };
+            await lessonService.update(lessonId, { title, description });
         
-            const lessonResponse = await lessonService.create(lessonData);
-            const lessonId = lessonResponse.data.id;
+            const existingCardIds = originalFlashcards;
+            const newCardIds = flashcards.filter(c => c.id).map(c => c.id);
+        
+            for (const oldId of existingCardIds) {
+                if (!newCardIds.includes(oldId)) {
+                    await flashcardService.delete(oldId);
+                }
+            }
+            
             for (const card of flashcards) {
-                await flashcardService.create({
-                    lessonId,
+                const cardData = {
+                    lessonId: parseInt(lessonId),
                     term: card.term,
                     definition: card.definition || '',
                     example: card.example || '',
                     translation: card.translation,
                     difficulty: card.difficulty || 1
-                });
+                };
+                
+                if (card.id) {
+                    await flashcardService.update(card.id, cardData);
+                } else {
+                    await flashcardService.create(cardData);
+                }
             }
+
             navigate(`/flashcards/${lessonId}`);
-            
         } catch (err) {
-            console.error('Error creating flashcard set:', err);
-    
-            if (err.response?.status === 403) {
-                setError('У вас нет прав для создания набора карточек. Пожалуйста, создайте профиль (студент или учитель) в разделе "Профиль".');
-            } else if (err.response?.data?.message) {
-                setError(err.response.data.message);
-            } else {
-                setError('Ошибка создания набора карточек. Попробуйте позже.');
-            }
+            setError(err.response?.data?.message || 'Ошибка сохранения набора');
         } finally {
-            setLoading(false);
+            setSaving(false);
         }
     };
 
+    if (loading) {
+        return <div className="loading">Загрузка...</div>;
+    }
+
+    if (!canEdit) {
+        return (
+            <div className="create-set-container">
+                <h1>Доступ запрещен</h1>
+                <p>У вас нет прав на редактирование этого набора карточек.</p>
+                <button onClick={() => navigate(`/flashcards/${lessonId}`)} className="btn-primary">
+                    Вернуться к набору
+                </button>
+            </div>
+        );
+    }
+
     return (
         <div className="create-set-container">
-            <h1>Создание набора карточек</h1>
+            <h1>Редактирование набора</h1>
 
             <ErrorMessage message={error} onClose={() => setError('')} />
 
@@ -92,17 +159,15 @@ const CreateFlashcardSet = () => {
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder="Например: Неправильные глаголы"
                             className="form-input"
                             required
                         />
                     </div>
                     <div className="form-group">
-                        <label>Описание (необязательно)</label>
+                        <label>Описание</label>
                         <textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            placeholder="Краткое описание набора"
                             className="form-input form-textarea"
                             rows="3"
                         />
@@ -117,11 +182,7 @@ const CreateFlashcardSet = () => {
                             <div className="card-editor-header">
                                 <span>Карточка {index + 1}</span>
                                 {flashcards.length > 1 && (
-                                    <button 
-                                        type="button" 
-                                        onClick={() => removeCard(index)}
-                                        className="btn-remove"
-                                    >
+                                    <button type="button" onClick={() => removeCard(index)} className="btn-remove">
                                         Удалить
                                     </button>
                                 )}
@@ -133,7 +194,6 @@ const CreateFlashcardSet = () => {
                                         type="text"
                                         value={card.term}
                                         onChange={(e) => updateCard(index, 'term', e.target.value)}
-                                        placeholder="apple"
                                         className="form-input"
                                         required
                                     />
@@ -144,28 +204,25 @@ const CreateFlashcardSet = () => {
                                         type="text"
                                         value={card.translation}
                                         onChange={(e) => updateCard(index, 'translation', e.target.value)}
-                                        placeholder="яблоко"
                                         className="form-input"
                                         required
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label>Определение (необязательно)</label>
+                                    <label>Определение</label>
                                     <input
                                         type="text"
                                         value={card.definition}
                                         onChange={(e) => updateCard(index, 'definition', e.target.value)}
-                                        placeholder="A round fruit with red or green skin"
                                         className="form-input"
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label>Пример использования</label>
+                                    <label>Пример</label>
                                     <input
                                         type="text"
                                         value={card.example}
                                         onChange={(e) => updateCard(index, 'example', e.target.value)}
-                                        placeholder="I ate an apple for breakfast"
                                         className="form-input"
                                     />
                                 </div>
@@ -187,29 +244,17 @@ const CreateFlashcardSet = () => {
                         </div>
                     ))}
 
-                    <button 
-                        type="button" 
-                        onClick={addCard}
-                        className="btn-add-card"
-                    >
+                    <button type="button" onClick={addCard} className="btn-add-card">
                         + Добавить карточку
                     </button>
                 </div>
 
                 <div className="form-actions">
-                    <button 
-                        type="button" 
-                        onClick={() => navigate('/flashcards')}
-                        className="btn-cancel"
-                    >
+                    <button type="button" onClick={() => navigate(`/flashcards/${lessonId}`)} className="btn-cancel">
                         Отмена
                     </button>
-                    <button 
-                        type="submit" 
-                        className="btn-primary"
-                        disabled={loading}
-                    >
-                        {loading ? 'Создание...' : 'Создать набор'}
+                    <button type="submit" className="btn-primary" disabled={saving}>
+                        {saving ? 'Сохранение...' : 'Сохранить изменения'}
                     </button>
                 </div>
             </form>
@@ -217,4 +262,4 @@ const CreateFlashcardSet = () => {
     );
 };
 
-export default CreateFlashcardSet;
+export default EditFlashcardSet;

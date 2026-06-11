@@ -17,6 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -30,6 +33,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(List.of("http://localhost:3000"));
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+                    config.setAllowedHeaders(List.of("*"));
+                    config.setAllowCredentials(true);
+                    config.setExposedHeaders(List.of("Authorization"));
+                    config.setMaxAge(3600L);
+                    return config;
+                }))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -46,6 +59,17 @@ public class SecurityConfig {
                                 "/actuator/health",
                                 "/actuator/metrics"
                         ).permitAll()
+                        .requestMatchers("/api/users/me").authenticated()
+                        .requestMatchers("/api/users/profile").authenticated()
+                        .requestMatchers("/api/users/students/profile").hasRole("USER")
+                        .requestMatchers("/api/users/teachers/profile").hasRole("USER")
+                        .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/lectures/**").hasAnyRole("STUDENT", "TEACHER", "ADMIN")
+                        .requestMatchers("/api/groups/**").hasAnyRole("STUDENT", "TEACHER", "ADMIN")
+                        .requestMatchers("/api/progress/**").hasRole("STUDENT")
+                        .requestMatchers("/api/lessons/**").authenticated()
+                        .requestMatchers("/api/flashcards/**").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

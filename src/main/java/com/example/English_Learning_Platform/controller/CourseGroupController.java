@@ -120,4 +120,15 @@ public class CourseGroupController {
         courseGroupService.deleteGroup(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/my")
+    @PreAuthorize("hasAnyRole('STUDENT', 'TEACHER')")
+    @Operation(
+            summary = "Получить мои группы",
+            description = "Возвращает группы текущего пользователя"
+    )
+    public ResponseEntity<Page<CourseGroupResponse>> getMyGroups(Pageable pageable) {
+        Page<CourseGroupResponse> page = courseGroupService.getMyGroups(pageable);
+        return ResponseEntity.ok(page);
+    }
 }

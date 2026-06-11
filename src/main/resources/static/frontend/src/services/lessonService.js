@@ -17,6 +17,7 @@ export const lessonService = {
         return api.put(`/api/lessons/${id}`, data);
     },
     delete: (id) => {
+        console.log('Deleting lesson with id:', id);
         return api.delete(`/api/lessons/${id}`);
     }
 };

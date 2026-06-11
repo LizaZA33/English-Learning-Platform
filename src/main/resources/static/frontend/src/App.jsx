@@ -21,13 +21,14 @@ import AdminDashboard from './components/Dashboard/AdminDashboard';
 import StudentDashboard from './components/Dashboard/StudentDashboard';
 import TeacherDashboard from './components/Dashboard/TeacherDashboard';
 import PrivateRoute from './components/Common/PrivateRoute';
+import RoleBasedRedirect from './components/Common/RoleBasedRedirect';
 import './App.css';
 
 function App() {
     return (
         <ThemeProvider>
             <AuthProvider>
-                <Router>
+                <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                     <div className="app">
                         <Navbar />
                         <main className="main-content">
@@ -65,51 +66,51 @@ function App() {
                                     </PrivateRoute>
                                 } />
                                 <Route path="/groups" element={
-                                    <PrivateRoute roles={['STUDENT', 'TEACHER']}>
+                                    <PrivateRoute>
                                         <GroupList />
                                     </PrivateRoute>
                                 } />
                                 <Route path="/groups/create" element={
-                                    <PrivateRoute roles={['TEACHER']}>
+                                    <PrivateRoute>
                                         <CreateGroup />
                                     </PrivateRoute>
                                 } />
                                 <Route path="/lectures" element={
-                                    <PrivateRoute roles={['STUDENT', 'TEACHER']}>
+                                    <PrivateRoute>
                                         <LectureList />
                                     </PrivateRoute>
                                 } />
                                 <Route path="/lectures/:id" element={
-                                    <PrivateRoute roles={['STUDENT', 'TEACHER']}>
+                                    <PrivateRoute>
                                         <LectureView />
                                     </PrivateRoute>
                                 } />
                                 <Route path="/lessons" element={
-                                    <PrivateRoute roles={['STUDENT', 'TEACHER']}>
+                                    <PrivateRoute>
                                         <LessonList />
                                     </PrivateRoute>
                                 } />
                                 <Route path="/lessons/:id" element={
-                                    <PrivateRoute roles={['STUDENT', 'TEACHER']}>
+                                    <PrivateRoute>
                                         <LessonView />
                                     </PrivateRoute>
                                 } />
                                 <Route path="/admin" element={
-                                    <PrivateRoute roles={['ADMIN']}>
+                                    <PrivateRoute>
                                         <AdminDashboard />
                                     </PrivateRoute>
                                 } />
                                 <Route path="/dashboard/student" element={
-                                    <PrivateRoute roles={['STUDENT']}>
+                                    <PrivateRoute>
                                         <StudentDashboard />
                                     </PrivateRoute>
                                 } />
                                 <Route path="/dashboard/teacher" element={
-                                    <PrivateRoute roles={['TEACHER']}>
+                                    <PrivateRoute>
                                         <TeacherDashboard />
                                     </PrivateRoute>
                                 } />
-                                <Route path="/" element={<Navigate to="/flashcards" replace />} />
+                                <Route path="/" element={<RoleBasedRedirect />} />
                             </Routes>
                         </main>
                     </div>

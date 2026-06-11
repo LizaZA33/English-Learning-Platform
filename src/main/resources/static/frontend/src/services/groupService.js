@@ -4,6 +4,9 @@ export const groupService = {
     getAll: (params, page = 0, size = 10) => {
         return api.get('/api/groups', { params: { ...params, page, size } });
     },
+    getMyGroups: (page = 0, size = 10) => {
+        return api.get('/api/groups/my', { params: { page, size } });
+    },
     getById: (id) => {
         return api.get(`/api/groups/${id}`);
     },

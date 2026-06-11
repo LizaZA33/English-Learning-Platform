@@ -20,7 +20,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .servers(List.of(
-                        new Server().url("http://localhost:8080").description("Local server")
+                        new Server().url("http://localhost:8081").description("Local server")
                 ))
                 .info(new Info()
                         .title("English Learning Platform API")

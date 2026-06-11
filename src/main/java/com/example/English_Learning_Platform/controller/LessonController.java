@@ -6,6 +6,7 @@ import com.example.English_Learning_Platform.service.LessonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -31,24 +32,36 @@ public class LessonController {
     private final LessonService lessonService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('USER', 'TEACHER', 'STUDENT')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Создать новый урок",
-            description = "Создает урок. Пользователь может создать личный урок, учитель - урок от своего имени"
+            description = "Создает урок. Любой аутентифицированный пользователь может создать личный урок"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Урок создан",
                     content = @Content(schema = @Schema(implementation = LessonResponse.class))),
             @ApiResponse(responseCode = "400", description = "Ошибка валидации"),
-            @ApiResponse(responseCode = "403", description = "Недостаточно прав")
+            @ApiResponse(responseCode = "401", description = "Пользователь не аутентифицирован")
     })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Данные для создания урока",
+            required = true,
+            content = @Content(
+                    schema = @Schema(implementation = LessonCreateRequest.class),
+                    examples = @ExampleObject(value = """
+                            {
+                              "title": "Неправильные глаголы",
+                              "description": "Изучение основных неправильных глаголов"
+                            }""")
+            )
+    )
     public ResponseEntity<LessonResponse> createLesson(@Valid @RequestBody LessonCreateRequest request) {
         LessonResponse response = lessonService.createLesson(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/my")
-    @PreAuthorize("hasAnyRole('USER', 'STUDENT', 'TEACHER')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Получить мои личные уроки",
             description = "Возвращает список личных уроков текущего пользователя"
@@ -62,7 +75,7 @@ public class LessonController {
     }
 
     @GetMapping("/teacher/{teacherId}")
-    @PreAuthorize("hasAnyRole('TEACHER', 'STUDENT', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Получить уроки учителя",
             description = "Возвращает список уроков конкретного учителя"
@@ -80,7 +93,7 @@ public class LessonController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("@lessonSecurity.hasAccessToLesson(#id)")
+    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Получить урок по ID",
             description = "Возвращает урок с карточками"

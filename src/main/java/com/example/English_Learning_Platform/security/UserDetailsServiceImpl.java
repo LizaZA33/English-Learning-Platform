@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -25,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .username(userEntity.getEmail())
                 .password(userEntity.getPassword())
                 .authorities(userEntity.getRoles().stream()
-                        .map(role -> new SimpleGrantedAuthority(role.name()))
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                         .collect(Collectors.toList()))
                 .accountExpired(false)
                 .accountLocked(false)

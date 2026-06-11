@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { userService } from '../../services/userService';
+import { useAuth } from '../../contexts/AuthContext';
 import ErrorMessage from '../Common/ErrorMessage';
 import './AdminDashboard.css';
 
@@ -9,6 +10,7 @@ const AdminDashboard = () => {
     const [error, setError] = useState('');
     const [search, setSearch] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const { hasRole } = useAuth();
 
     useEffect(() => {
         loadUsers();
@@ -16,10 +18,17 @@ const AdminDashboard = () => {
 
     const loadUsers = async (searchTerm = '') => {
         try {
+            setLoading(true);
             const response = await userService.getAll(searchTerm);
             setUsers(response.data.content || []);
+            setError('');
         } catch (err) {
-            setError('Ошибка загрузки пользователей');
+            console.error('Error loading users:', err);
+            if (err.response?.status === 403) {
+                setError('Доступ запрещен. Убедитесь, что у вас есть права администратора.');
+            } else {
+                setError('Ошибка загрузки пользователей');
+            }
         } finally {
             setLoading(false);
         }
@@ -90,65 +99,74 @@ const AdminDashboard = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map(user => (
-                            <tr key={user.id}>
-                                <td>{user.id}</td>
-                                <td>{user.email}</td>
-                                <td>
-                                    <div className="roles-cell">
-                                        {user.roles?.map(role => (
-                                            <span key={role} className="role-tag">
-                                                {role}
-                                                <button
-                                                    onClick={() => handleRoleUpdate(user.id, role, false)}
-                                                    className="role-remove"
-                                                    title="Удалить роль"
-                                                >
-                                                    x
-                                                </button>
-                                            </span>
-                                        ))}
-                                    </div>
-                                </td>
-                                <td>
-                                    {user.teacher && (
-                                        <div className="profile-info-cell">
-                                            Учитель: {user.teacher.lastName} {user.teacher.firstName}
-                                        </div>
-                                    )}
-                                    {user.student && (
-                                        <div className="profile-info-cell">
-                                            Студент: {user.student.lastName} {user.student.firstName}
-                                        </div>
-                                    )}
-                                </td>
-                                <td>
-                                    <div className="actions-cell">
-                                        <button
-                                            onClick={() => handleRoleUpdate(user.id, 'TEACHER', true)}
-                                            className="btn-action btn-add-role"
-                                            title="Добавить роль TEACHER"
-                                        >
-                                            +Учитель
-                                        </button>
-                                        <button
-                                            onClick={() => handleRoleUpdate(user.id, 'ADMIN', true)}
-                                            className="btn-action btn-add-role"
-                                            title="Добавить роль ADMIN"
-                                        >
-                                            +Админ
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeleteUser(user.id)}
-                                            className="btn-action btn-delete"
-                                            title="Удалить пользователя"
-                                        >
-                                            Удалить
-                                        </button>
-                                    </div>
-                                </td>
+                        {users.length === 0 ? (
+                            <tr>
+                                <td colSpan="5" style={{ textAlign: 'center' }}>Нет пользователей</td>
                             </tr>
-                        ))}
+                        ) : (
+                            users.map(user => (
+                                <tr key={user.id}>
+                                    <td>{user.id}</td>
+                                    <td>{user.email}</td>
+                                    <td>
+                                        <div className="roles-cell">
+                                            {user.roles?.map(role => (
+                                                <span key={role} className="role-tag">
+                                                    {role}
+                                                    {role !== 'ADMIN' && (
+                                                        <button
+                                                            onClick={() => handleRoleUpdate(user.id, role, false)}
+                                                            className="role-remove"
+                                                            title="Удалить роль"
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    )}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {user.teacher && (
+                                            <div className="profile-info-cell">
+                                                Учитель: {user.teacher.lastName} {user.teacher.firstName}
+                                            </div>
+                                        )}
+                                        {user.student && (
+                                            <div className="profile-info-cell">
+                                                Студент: {user.student.lastName} {user.student.firstName}
+                                            </div>
+                                        )}
+                                    </td>
+                                    <td>
+                                        <div className="actions-cell">
+                                            {!user.roles?.includes('TEACHER') && (
+                                                <button
+                                                    onClick={() => handleRoleUpdate(user.id, 'TEACHER', true)}
+                                                    className="btn-action btn-add-role"
+                                                >
+                                                    +Учитель
+                                                </button>
+                                            )}
+                                            {!user.roles?.includes('ADMIN') && (
+                                                <button
+                                                    onClick={() => handleRoleUpdate(user.id, 'ADMIN', true)}
+                                                    className="btn-action btn-add-role"
+                                                >
+                                                    +Админ
+                                                </button>
+                                            )}
+                                            <button
+                                                onClick={() => handleDeleteUser(user.id)}
+                                                className="btn-action btn-delete"
+                                            >
+                                                Удалить
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>

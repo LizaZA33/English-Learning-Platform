@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { lectureService } from '../../services/lectureService';
+import { useAuth } from '../../contexts/AuthContext';
 import ErrorMessage from '../Common/ErrorMessage';
 import './LectureList.css';
 
@@ -9,6 +10,7 @@ const LectureList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [search, setSearch] = useState('');
+    const { hasRole } = useAuth();
 
     useEffect(() => {
         loadLectures();
@@ -19,7 +21,12 @@ const LectureList = () => {
             const response = await lectureService.getAll();
             setLectures(response.data.content || []);
         } catch (err) {
-            setError('Ошибка загрузки лекций');
+            console.error('Error loading lectures:', err);
+            if (err.response?.status === 403) {
+                setError('У вас нет доступа к лекциям. Возможно, вы не состоите в группе.');
+            } else {
+                setError('Ошибка загрузки лекций');
+            }
         } finally {
             setLoading(false);
         }
@@ -60,19 +67,25 @@ const LectureList = () => {
 
             <ErrorMessage message={error} onClose={() => setError('')} />
 
-            <div className="lectures-grid">
-                {lectures.map(lecture => (
-                    <Link to={`/lectures/${lecture.id}`} key={lecture.id} className="lecture-card">
-                        <h3>{lecture.title}</h3>
-                        {lecture.module && (
-                            <span className="lecture-module">{lecture.module.name}</span>
-                        )}
-                        <p className="lecture-preview">
-                            {lecture.content?.substring(0, 150)}...
-                        </p>
-                    </Link>
-                ))}
-            </div>
+            {lectures.length === 0 ? (
+                <div className="empty-state">
+                    <p>Лекции пока не добавлены</p>
+                </div>
+            ) : (
+                <div className="lectures-grid">
+                    {lectures.map(lecture => (
+                        <Link to={`/lectures/${lecture.id}`} key={lecture.id} className="lecture-card">
+                            <h3>{lecture.title}</h3>
+                            {lecture.module && (
+                                <span className="lecture-module">{lecture.module.name}</span>
+                            )}
+                            <p className="lecture-preview">
+                                {lecture.content?.substring(0, 150)}...
+                            </p>
+                        </Link>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };

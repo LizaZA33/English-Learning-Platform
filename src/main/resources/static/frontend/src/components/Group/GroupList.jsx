@@ -9,7 +9,7 @@ const GroupList = () => {
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const { hasRole } = useAuth();
+    const { hasRole, user } = useAuth();
 
     useEffect(() => {
         loadGroups();
@@ -17,13 +17,24 @@ const GroupList = () => {
 
     const loadGroups = async () => {
         try {
-            const response = await groupService.getAll({});
+            // Пытаемся получить группы текущего пользователя
+            const response = await groupService.getMyGroups();
             setGroups(response.data.content || []);
         } catch (err) {
-            setError('Ошибка загрузки групп');
+            console.error('Error loading groups:', err);
+            if (err.response?.status === 403) {
+                setError('У вас нет доступа к группам. Возможно, вы не состоите ни в одной группе.');
+            } else {
+                setError('Ошибка загрузки групп');
+            }
         } finally {
             setLoading(false);
         }
+    };
+
+    const copyInviteCode = (code) => {
+        navigator.clipboard.writeText(code);
+        alert('Код приглашения скопирован: ' + code);
     };
 
     if (loading) {
@@ -33,11 +44,13 @@ const GroupList = () => {
     return (
         <div className="group-list-container">
             <div className="group-list-header">
-                <h1>Учебные группы</h1>
+                <h1>Мои группы</h1>
                 <div className="group-actions">
-                    <Link to="/groups/join" className="btn-primary">
-                        Вступить в группу
-                    </Link>
+                    {!hasRole('STUDENT') && !hasRole('TEACHER') && (
+                        <Link to="/groups/join" className="btn-primary">
+                            Вступить в группу
+                        </Link>
+                    )}
                     {hasRole('TEACHER') && (
                         <Link to="/groups/create" className="btn-secondary">
                             Создать группу
@@ -51,9 +64,16 @@ const GroupList = () => {
             {groups.length === 0 ? (
                 <div className="empty-state">
                     <p>Вы пока не состоите ни в одной группе</p>
-                    <Link to="/groups/join" className="btn-primary">
-                        Вступить в группу
-                    </Link>
+                    {!hasRole('STUDENT') && !hasRole('TEACHER') && (
+                        <Link to="/groups/join" className="btn-primary">
+                            Вступить в группу
+                        </Link>
+                    )}
+                    {hasRole('TEACHER') && (
+                        <Link to="/groups/create" className="btn-primary">
+                            Создать первую группу
+                        </Link>
+                    )}
                 </div>
             ) : (
                 <div className="groups-grid">
@@ -72,9 +92,19 @@ const GroupList = () => {
                                 <span className="student-count">
                                     Студентов: {group.studentCount || 0}
                                 </span>
-                                <span className="invite-code-label">
-                                    Код: {group.inviteCode}
-                                </span>
+                                {hasRole('TEACHER') && group.inviteCode && (
+                                    <button 
+                                        className="copy-code-btn"
+                                        onClick={() => copyInviteCode(group.inviteCode)}
+                                    >
+                                        Код: {group.inviteCode} 📋
+                                    </button>
+                                )}
+                                {hasRole('STUDENT') && group.inviteCode && (
+                                    <span className="invite-code-label">
+                                        Код группы: {group.inviteCode}
+                                    </span>
+                                )}
                             </div>
                         </div>
                     ))}
